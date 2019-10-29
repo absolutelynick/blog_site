@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block head_title %}{{error_title}}{% endblock %}
+
+{% block content %}
+
+    <h1>{{error_title}}</h1>
+
+    {{error_text}}
+
+    {% if content.exception %}
+
+        <b>exception</b>
+
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block head_title %}Blog List{% endblock %}
+
+{% block content %}
+
+    Welcome to this Blog List
+
+    {% for obj in object_list %}
+
+        <h1>{{ obj.title }}</h1>
+            <p>{{ obj.content }}</p>
+
+    {% endfor %}
+
+{% endblock %}

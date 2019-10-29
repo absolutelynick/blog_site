@@ -1,19 +1,19 @@
 from django.urls import path
 
 from .views import (
-    blog_post_detail_veiw,
-    blog_post_list_veiw,
-    blog_post_create_veiw,
-    blog_post_update_veiw,
-    blog_post_delete_veiw,
+    blog_post_detail_view,
+    blog_post_list_view,
+    blog_post_create_view,
+    blog_post_update_view,
+    blog_post_delete_view,
 )
 
 
 urlpatterns = [
-    path("", blog_post_list_veiw),
-    path("new-post/", blog_post_create_veiw),
-    # path("new-blog/", blog_post_create_veiw),
-    path("<str:slug>/", blog_post_detail_veiw),
-    path("<str:slug>/edit", blog_post_update_veiw),
-    path("<str:slug>/delete", blog_post_delete_veiw),
+    path("", blog_post_list_view),
+    path("new-post/", blog_post_create_view),
+    # path("new-blog/", blog_post_create_view),
+    path("<str:slug>/", blog_post_detail_view),
+    path("<str:slug>/edit", blog_post_update_view),
+    path("<str:slug>/delete", blog_post_delete_view),
 ]

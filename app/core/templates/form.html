@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block head_title %}{{ title }}{% endblock %}
+
+{% block content %}
+
+    <div class="card-body">
+        <h2 class="card-title text-center">{{ title }}</h2>
+    </div>
+    <form method="POST" action=".">{% csrf_token %}
+        <div class="form-group">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col">
+                      <input type="text" class="form-control" placeholder="First name" name="first_name"
+                             id="validationTooltip01" required>
+                    </div>
+                    <div class="col">
+                      <input type="text" class="form-control" placeholder="Last name" name="last_name"
+                             id="validationTooltip02" required>
+                    </div>
+                </div>
+            </div>
+
+          <div class="form-group">
+            <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="email@example.com"
+                   name="email" pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$" required>
+          </div>
+
+          <div class="form-group">
+            <label for="exampleFormControlTextarea1">Content</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="content" required></textarea>
+          </div>
+            <div class="align-self-center">
+                <button type="submit" class="btn btn-primary form-control">Send</button>
+            </div>
+        </div>
+    </form>
+
+
+
+
+{% endblock %}

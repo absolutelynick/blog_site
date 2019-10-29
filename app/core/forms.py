@@ -8,6 +8,4 @@ class ContactForm(forms.Form):
     content = forms.CharField(widget=forms.Textarea)
 
     def clean_email(self, *args, **kwargs):
-        email = self.cleaned_data.get("email")
-        print(email)
-        return email
+        self.cleaned_data.get("email")

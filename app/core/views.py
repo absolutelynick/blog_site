@@ -3,7 +3,8 @@ from .forms import ContactForm
 
 
 def home_page(request):
-    return render(request, "index.html", {"title": "Index"})
+    context = {"title": "Index"}
+    return render(request, "index.html", context)
 
 
 def about_page(request):

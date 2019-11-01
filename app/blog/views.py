@@ -18,8 +18,8 @@ def blog_post_create_view(request):
     if form.is_valid():
         if settings.DEBUG:
             print(form.cleaned_data)
-        form.save()
-        form = BlogPostModelForm()
+        # form.save()
+        # form = BlogPostModelForm()
 
     template_name = "blog/create.html"
     context = {"form": form, "title": "Create Post"}

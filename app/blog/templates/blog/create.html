@@ -11,11 +11,7 @@
     <form method="POST" action=".">{% csrf_token %}
         <div class="form-group">
 
-                {% bootstrap_form form %}
-
-                {% if field.help_text %}
-                    <small class="form-text text-muted">{{ field.help_text }}</small>
-                {% endif %}
+                {% bootstrap_form form show_label=False %}
 
             <div class="align-self-center">
                 <button type="submit" class="btn btn-primary form-control">Post</button>
@@ -23,6 +19,5 @@
 
         </div>
     </form>
-
 
 {% endblock %}

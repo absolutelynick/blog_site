@@ -4,13 +4,27 @@
 
 {% block content %}
 
-    Welcome to this Blog List
+<div class="jumbotron jumbotron-fluid p-3 mb-2 bg-white text-dark" style="margin-top:50px;">
+  <div class="container">
+    <h1 class="display-5 text-center">Welcome to this Blog List</h1>
+    <p class="lead text-center">Some example listed dictionary objects.</p>
+  </div>
+</div>
+
 
     {% for obj in object_list %}
 
-        <h1>{{ obj.title }}</h1>
-            <p>{{ obj.content }}</p>
+        <div class="jumbotron">
+          <h1 class="display-6">Post</h1>
+          <p class="lead">{{ obj.title }}</p>
+          <hr class="my-5">{{ obj.content }}
+          <p class="lead">
+            <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+          </p>
+        </div>
 
     {% endfor %}
+
+    {# TODO https://getbootstrap.com/docs/4.3/components/card/   #}
 
 {% endblock %}

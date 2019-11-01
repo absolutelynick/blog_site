@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+{% load bootstrap4 %}
+
+{% block head_title %}{{ title }}{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+      <div class="col-6 mx-auto">
+
+        <div class="container" style="margin-top:50px;">
+
+            <div class="jumbotron jumbotron-fluid">
+
+                <img src="{% static "images/icons/blog.png"%}"
+                   width="70" height="70" class="d-inline-block align-top rounded mx-auto d-block" alt="">
+
+                <h1 class="display-5 text-center">Sign up</h1>
+
+                <div class="container">
+
+                <div class="card-body">
+                    <h2 class="card-title text-center">{{ title }}</h2>
+                </div>
+                <form method="POST" action=".">{% csrf_token %}
+                    <div class="form-group">
+
+                        {% bootstrap_form form layout='inline' error_types='all' %}
+
+                        <div class="align-self-center">
+                            <button type="submit" class="btn btn-primary form-control">Sign up</button>
+                        </div>
+                    </div>
+
+                </form>
+
+                    <p class="font-weight-light text-center">Have an account?
+                        <a class="" href="{% url 'login' %}">Sign in</a></p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+      </div>
+  </div>
+</div>
+
+{% endblock %}

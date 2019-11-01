@@ -10,7 +10,7 @@ from .views import (
 
 
 urlpatterns = [
-    path("", blog_post_list_view),
+    path("", blog_post_list_view, name="blog"),
     path("new-post/", blog_post_create_view),
     # path("new-blog/", blog_post_create_view),
     path("<str:slug>/", blog_post_detail_view),

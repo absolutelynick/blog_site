@@ -38,9 +38,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "bootstrap4",
-    "rest_framework",
     "rest_framework.authtoken",
+    "rest_framework",
+    "bootstrap4",
     "core",
     "blog",
     "users",
@@ -126,3 +126,7 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+
+LOGIN_REDIRECT_URL = "home"
+
+AUTH_USER_MODEL = "core.User"

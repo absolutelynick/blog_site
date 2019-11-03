@@ -24,7 +24,7 @@ urlpatterns = [
     path("blog/", include("blog.urls")),
 ]
 
-# Error Handlers # Will only work with debug as False
+# Error Handlers # These will only work with debug as False
 
 handler400 = "core.views.custom_400_page"
 handler403 = "core.views.custom_403_page"

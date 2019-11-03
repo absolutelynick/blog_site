@@ -5,10 +5,12 @@
 
 {% block content %}
 
-    <div class="card-body">
-        <h2 class="card-title text-center">{{ title }}</h2>
+    <div class="jumbotron text-center" style="margin: 50px;">
+      <h1 class="display-4">Thank you for signing up!</h1>
+      <p class="lead">Your user details are now encrypted with the highest level possible.</p>
+      <hr class="my-4">
+      <p>Click below to head to the login page.</p>
+      <a class="btn btn-primary btn-lg" href="{% url 'login' %}" role="button">Login</a>
     </div>
-
-    Thank you for signing up
 
 {% endblock %}

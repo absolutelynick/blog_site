@@ -8,7 +8,7 @@
     <div class="card-body">
         <h2 class="card-title text-center">{{ title }}</h2>
     </div>
-    <form method="POST" action=".">{% csrf_token %}
+    <form method="POST" action="">{% csrf_token %}
         <div class="form-group">
 
                 {% bootstrap_form form show_label=False %}

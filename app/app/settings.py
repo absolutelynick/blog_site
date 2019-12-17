@@ -11,16 +11,18 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import os.path as path
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+BASE_DIR = path.abspath(path.join(__file__, "../.."))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "7-s$2_k9v3r-y#h3gttn7=uh5x#09lr%x(^v4&2u3@j2hgss$-"
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY", "eh0(m#9@4imgvsc@1w&mr@#a58+_dn^!%0h4w%f0$h0i(k$511"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -28,6 +30,18 @@ DEBUG = True
 ALLOWED_HOSTS = ALLOWED_HOSTS = (
     ["0.0.0.0", "127.0.0.1"] if DEBUG else ["pythonanywhere.com"]
 )
+
+# Sentry Errors
+
+if not DEBUG:
+    import sentry_sdk
+    from sentry_sdk.integrations.django import DjangoIntegration
+
+    sentry_sdk.init(
+        dsn="https://63c3efb271074a27b1a708a8d17b9a44@sentry.io/1854798",
+        integrations=[DjangoIntegration()],
+    )
+
 
 # Application definition
 
@@ -44,6 +58,7 @@ INSTALLED_APPS = [
     "core",
     "blog",
     "users",
+    "api",
 ]
 
 MIDDLEWARE = [
@@ -97,15 +112,29 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {"min_length": 8},
+    },
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+    {
+        "NAME": "api.validators.password_validator.NumberValidator",
+        "OPTIONS": {"min_digits": 2},
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"
+        "NAME": "api.validators.password_validator.UppercaseValidator",
+        "OPTIONS": {"min_digits": 1},
+    },
+    {
+        "NAME": "api.validators.password_validator.LowercaseValidator",
+        "OPTIONS": {"min_digits": 2},
+    },
+    {
+        "NAME": "api.validators.password_validator.SymbolValidator",
+        "OPTIONS": {"min_digits": 2},
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -125,8 +154,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = "/static/"
+
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
 LOGIN_REDIRECT_URL = "home"
 
-AUTH_USER_MODEL = "core.User"
+AUTH_USER_MODEL = "users.User"

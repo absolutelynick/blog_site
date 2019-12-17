@@ -6,11 +6,11 @@
 {% block content %}
 
     <div class="jumbotron text-center" style="margin: 50px;">
-      <h1 class="display-4">Thank you for signing up!</h1>
-      <p class="lead">Your user details are now encrypted with the highest level possible.</p>
+      <h1 class="display-5">Thank you for signing up!</h1>
+      <p class="lead">Your user details are now encrypted to the highest level possible.</p>
       <hr class="my-4">
       <p>Click below to head to the login page.</p>
-      <a class="btn btn-primary btn-lg" href="{% url 'login' %}" role="button">Login</a>
+      <a class="btn btn-primary btn-lg" href="{% url 'users:login' %}" role="button">Login</a>
     </div>
 
 {% endblock %}

@@ -8,6 +8,7 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="shortcut icon" href="{% static 'images/icons/login.png' %}" />
 
     <title>{% block head_title %}{% endblock %}</title>
   </head>
@@ -22,44 +23,93 @@
 
       <a class="navbar-brand" href="{% url 'home' %}">
           <img src="{% static "images/icons/blog.png"%}"
-               width="40" height="40" class="d-inline-block align-top" alt="">
+               width="40" height="40" class="d-inline-block" alt="">
       </a>
 
       <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-          <li class="nav-item active">
-            <a class="nav-link" href="{% url 'home' %}">Home</a>
-          </li>
-          <li class="nav-item active">
-            <a class="nav-link" href="{% url 'about' %}">About</a>
-          </li>
-          <li class="nav-item active">
-            <a class="nav-link" href="{% url 'contact' %}">Contact</a>
-          </li>
-          <li class="nav-item active">
-            <a class="nav-link" href="{% url 'blog' %}">Blog</a>
-          </li>
+            <li class="nav-item active">
+              {% if title == "Home" %}
+                  <b><a class="nav-link disabled" href="{% url 'home' %}">Home</a></b>
+              {% else %}
+                    <a class="nav-link" href="{% url 'home' %}">Home</a>
+              {% endif %}
+            </li>
+            <li class="nav-item active">
+              {% if title == "About" %}
+                  <b><a class="nav-link disabled" href="{% url 'about' %}">About</a></b>
+              {% else %}
+                    <a class="nav-link" href="{% url 'about' %}">About</a>
+              {% endif %}
+            </li>
+            <li class="nav-item active">
+              {% if title == "Contact Us" %}
+                  <b><a class="nav-link disabled" href="{% url 'contact' %}">Contact</a></b>
+              {% else %}
+                    <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+              {% endif %}
+            </li>
+            <li class="nav-item active">
+              {% if title == "Blog" %}
+                  <b><a class="nav-link disabled" href="{% url 'blog' %}">Posts</a></b>
+              {% else %}
+                    <a class="nav-link" href="{% url 'blog' %}">Posts</a>
+              {% endif %}
+            </li>
         </ul>
 
       </div>
 
         <div class="div-inline my-2 my-lg-0" style="opacity: 70%;">
 
-          {% if user.is_authenticated %}
+              {% if user.is_authenticated %}
 
-            <a class="nav-link" href="{% url 'login' %}">
-                <img src="{% static "images/icons/login.png"%}"
-                    width="40" height="40" class="d-inline-block align-top" alt="Login">
-            </a>
+              <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                  <li class="nav-item active">
 
-          {% else %}
+                <a class="nav-link" href="">
+                    <img src="{% static "images/icons/post.png"%}"
+                        width="30" height="30" alt="Post"
+                        style="margin-top: 5px;"
+                        title="Click here to add a post">
+                </a>
 
-            <a class="nav-link" href="{% url 'logout' %}">
-                <img src="{% static "images/icons/logout.png"%}"
-                    width="40" height="40" class="d-inline-block align-top" alt="Logout">
-            </a>
+                </li>
+                <li class="nav-item active">
 
-          {% endif %}
+                <a class="nav-link" href="">
+                    <img src="{% static "images/icons/login.png"%}"
+                        width="40" height="40" alt="User Profile"
+                        title="Click here to edit your profile">
+                </a>
+
+                </li>
+                <li class="nav-item active">
+
+                <a class="nav-link" href="{% url 'users:logout' %}">
+                    <img src="{% static "images/icons/logout.png"%}"
+                        width="35" height="35" alt="Logout"
+                        style="margin-top: 3px;"
+                        title="Click here to logout">
+                </a>
+
+                </li>
+              </ul>
+
+              {% else %}
+
+                <a class="nav-link" href="{% url 'users:login' %}">
+                    <img src="{% static "images/icons/login.png"%}"
+                        width="40" height="40" alt="Login"
+                        title="Click here to login">
+                </a>
+
+              {% endif %}
+
+                </li>
+
+            </ul>
 
         </div>
 

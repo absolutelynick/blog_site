@@ -8,7 +8,7 @@ def blog_post_list_view(request):
     # This could be a list or search view
     qs = BlogPost.objects.all()
     template_name = "blog/list.html"
-    context = {"object_list": qs}
+    context = {"object_list": qs, "title": "Blog"}
     return render(request, template_name, context)
 
 

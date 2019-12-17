@@ -1,22 +1,44 @@
 from django.shortcuts import render
-from .forms import ContactForm
-
+from .forms import Contact_Form
+from django import forms
 
 def home_page(request):
-    context = {"title": "Index"}
-    return render(request, "index.html", context)
+    return render(request, "core/home.html", {"title": "Home"})
 
 
 def about_page(request):
-    return render(request, "about.html", {"title": "About"})
+    return render(request, "core/about.html", {"title": "About"})
 
 
 def contact_page(request):
-    form = ContactForm(request.POST or None)
+    form = Contact_Form(request.POST or None)
+
     if form.is_valid():
         print(form.cleaned_data)
+        context = {
+            "title": "Contact Us",
+            "first_name": form.cleaned_data["first_name"],
+            "last_name": form.cleaned_data["last_name"],
+        }
+        return render(request, "core/thankyou.html", context)
+
+    if request.user.is_authenticated:
+        print(form.fields['first_name'].widget.__dict__)
+        form.fields['first_name'].initial = request.user.first_name
+        form.fields['first_name'].widget.attrs['readonly'] = True
+        form.fields['last_name'].initial = request.user.last_name
+        form.fields['last_name'].widget.attrs['readonly'] = True
+        form.fields['email'].initial = request.user.email
+        form.fields['email'].widget.attrs['readonly'] = True
+        form.fields['content'].widget.attrs['placeholder'] = (
+            f"Hi {request.user.first_name}, Let us know what you are thinking"
+        )
+        form.fields['content'].widget.attrs['autofocus'] = 'autofocus'
+    else:
+        form.fields['first_name'].widget.attrs['autofocus'] = 'autofocus'
+
     context = {"title": "Contact Us", "form": form}
-    return render(request, "form.html", context)
+    return render(request, "core/form.html", context)
 
 
 def custom_400_page(request, exc):

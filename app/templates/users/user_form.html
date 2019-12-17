@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load static %}
+{% load bootstrap4 %}
+
+{% block head_title %}{{ title }}{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+      <div class="col-6 mx-auto">
+
+        <div class="container" style="margin-top:30px;">
+
+            <div class="jumbotron jumbotron-fluid">
+
+                <img src="{% static "images/icons/blog.png"%}"
+                   width="70" height="70" style="margin-top:-40px;"
+                     class="d-inline-block align-top rounded mx-auto d-block" alt="">
+
+                <h1 class="display-5 text-center">Sign up</h1>
+
+                <div class="container">
+
+                <form method="POST" action="">{% csrf_token %}
+
+                    <div class="form-group">
+
+{#                        {% bootstrap_form form layout='inline' error_types='all' %}#}
+                        <div class="form-row" style="margin-bottom:15px;">
+                            {% bootstrap_field form.first_name form_group_class='col-md-6' layout='inline' error_types='all' %}
+                            {% bootstrap_field form.last_name form_group_class='col-md-6' layout='inline' error_types='all' %}
+
+                            {% if form.first_name.errors or form.last_name.errors %}
+                                <div class="text-danger font-weight-light" role="alert">
+                                    <small>
+                                        {{ form.first_name.errors }}
+                                        {{ form.last_name.errors }}
+                                    </small>
+                                </div>
+                            {% endif %}
+
+
+                        </div>
+
+                            {% bootstrap_field form.username layout='inline' error_types='all' %}
+
+                            {% if form.username.errors %}
+                                <div class="text-danger font-weight-light" role="alert">
+                                    <small>{{ form.username.errors }}</small>
+                                </div>
+                            {% endif %}
+
+                            {% bootstrap_field form.email layout='inline' error_types='all' %}
+
+                            {% if form.email.errors %}
+                                <div class="text-danger font-weight-light" role="alert">
+                                    <small>{{ form.email.errors }}</small>
+                                </div>
+                            {% endif %}
+
+                        <div class="form-row" style="margin-bottom:15px;">
+                            {% bootstrap_field form.password1 form_group_class='col-md-6' layout='inline' error_types='all' %}
+                            {% bootstrap_field form.password2 form_group_class='col-md-6' layout='inline' error_types='all' %}
+
+                            <div class="text-danger font-weight-light" role="alert">
+                                <small>
+                                    {% if form.password1.errors or form.password2.errors %}
+                                        {% for error in form.password1.errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                        {% for error in form.password2.errors %}
+                                            {% if error not in form.password1.errors %}
+                                                <li>{{ error }}</li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="align-self-center">
+                            <button type="submit" class="btn btn-primary form-control">Sign up</button>
+                        </div>
+                    </div>
+
+                </form>
+
+                    <p style="margin-bottom:-40px;" class="font-weight-light text-center">Have an account?
+                        <a class="" href="{% url 'users:login' %}">Sign in</a></p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+      </div>
+  </div>
+</div>
+
+{% endblock %}

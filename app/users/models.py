@@ -3,9 +3,9 @@ from django.contrib.auth.models import (
     PermissionsMixin,
     BaseUserManager,
 )
-from django.contrib import auth
-
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
+
 import uuid
 
 
@@ -62,11 +62,27 @@ class User(AbstractBaseUser, PermissionsMixin):
     date_modified = models.DateTimeField(
         "date modified", auto_now=True, null=True, blank=True
     )
+    about = models.CharField(max_length=255, null=True, blank=True)
+    website = models.CharField(max_length=255, null=True, blank=True)
+    country = models.CharField(max_length=255, null=True, blank=True)
+
     picture_updated = models.DateTimeField(null=True)
+    picture_file_path = models.CharField(max_length=128, null=True)
+    picture_file_type = models.CharField(max_length=5, null=True)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_email_verified = models.BooleanField(default=False)
+
+    follows = models.ManyToManyField("self", related_name="follows", blank=True)
+    followers = models.ManyToManyField("self", related_name="followers", blank=True)
+    blocked = models.ManyToManyField("self", related_name="blocked", blank=True)
+
+    posts = models.ManyToManyField("blog.BlogPost", related_name="posts", blank=True)
+    liked = models.ManyToManyField("blog.BlogPost", related_name="liked", blank=True)
+    comments = ArrayField(
+        models.TextField(blank=False, null=False), blank=False, null=True
+    )
 
     def __str__(self):
         return f"@{self.username}"
@@ -74,6 +90,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def full_name(self):
         return f"{self.first_name} {self.last_name}"
+
+    @property
+    def profile_picture_path(self):
+        if self.has_picture:
+            return self.picture_file_path
+        return None
+
+    @property
+    def has_picture(self):
+        return self.picture_file_type is not None
 
     class Meta(object):
         verbose_name = "user"

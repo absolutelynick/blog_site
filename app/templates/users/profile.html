@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load static %}
+{% load bootstrap4 %}
+
+{% block head_title %}{{ title }}{% endblock %}
+
+{% block content %}
+
+<div class="jumbotron text-center" style="margin: 30px; background-color: white;">
+
+    {% if user.is_authenticated %}
+
+        <img src="{{ image }}" height="200" width="200" class="rounded-circle float-left" alt="Profile Picture">
+
+    {% else %}
+
+
+    {% endif %}
+
+
+    <div class="">First Name: {{ user.first_name }}</div><br>
+    <div class="">Float right on all viewport sizes</div><br>
+    <div class="">Float right on all viewport sizes</div><br>
+
+
+
+
+{#    {% for obj in object_list %}#}
+{##}
+{#        <div class="jumbotron">#}
+{#          <h1 class="display-6">Post</h1>#}
+{#          <p class="lead">{{ obj.title }}</p>#}
+{#          <hr class="my-5">{{ obj.content }}#}
+{#          <p class="lead">#}
+{#            <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>#}
+{#          </p>#}
+{#        </div>#}
+{##}
+{#    {% endfor %}#}
+
+</div>
+
+
+{% endblock %}
+
+{#                Edit Profile#}
+{#                Edit Password#}
+{#                Edit Privacy#}
+{#                Login Activity#}
+{#                Report a Problem#}
+{#                Log Out#}
+
+
+{#            <a class="nav-link" data-toggle="modal" data-target="#exampleModalCenter" href="#">#}
+{#                <img src="{% static "images/icons/user.png"%}"#}
+{#                    width="35" height="35" alt="Login"#}
+{#                    title="Click here to login">#}
+{#            </a>#}
+{##}
+{##}
+{#    <div class="modal fade align-middle" id="exampleModalCenter" tabindex="-1" role="dialog"#}
+{#         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">#}
+{#      <div class="modal-dialog modal-dialog-centered" role="document">#}
+{#        <div class="modal-content">#}
+{#            <a href="{% url 'home' %}" class="list-group-item list-group-item-action text-center">Home</a>#}
+{#            <a href="{% url 'about' %}" class="list-group-item list-group-item-action text-center">About</a>#}
+{#            <a href="{% url 'contact' %}" class="list-group-item list-group-item-action text-center">Contact</a>#}
+{#            <a href="#" class="list-group-item list-group-item-action text-center">Profile</a>#}
+{#            <a href="{% url 'blog' %}" class="list-group-item list-group-item-action text-center">Posts</a>#}
+{#            <a href="{% url 'users:logout' %}" class="list-group-item list-group-item-action text-center">Log Out</a>#}
+{#            <a href="#" class="list-group-item list-group-item-action text-center" data-dismiss="modal">Close</a>#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}

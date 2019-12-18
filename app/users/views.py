@@ -1,14 +1,29 @@
 from django.shortcuts import render
-from django import forms
 from django.views.generic import TemplateView
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
+from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-# from django.http import HttpResponseRedirect
-# from django.contrib.auth.mixins import LoginRequiredMixin
-#
-# from .models import User
 from .forms import UserCreateForm
+
+
+class ProfileView(LoginRequiredMixin, TemplateView):
+    """Profile Page"""
+
+    template_name = "users/profile.html"
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+
+        if user.has_picture:
+            profile_pic = user.profile_picture_path
+        else:
+            placeholder = static("images/users/placeholder.png")
+            profile_pic = placeholder
+
+        context = {"title": f"{user.full_name} {user}", "image": profile_pic}
+        return render(request, self.template_name, context=context)
 
 
 class ThanksPage(TemplateView):
@@ -27,29 +42,9 @@ class CreateUserView(CreateView):
     form_class = UserCreateForm
     success_url = reverse_lazy("users:thanks")
     template_name = "users/user_form.html"
+    context = {"title": "Sign Up"}
 
-    # model = User
-    # success_url = reverse_lazy("users:thanks")
-
-    # model = User
-    # form_class = Sign_Up_Form
-    # success_url = reverse_lazy("users:thanks")
-    # template_name = "users/user_form.html"
-    # context = {"title": "Sign up", "form": form}
-    # fields = ["first_name", "last_name", "username", "email", "password"]
-
-    # def get(self, request, *args, **kwargs):
-    #     form = Sign_Up_Form(request.POST or None)
-    #     context = {"title": "Sign up", "form": form}
-    #     return render(request, self.template_name, context=context)
-
-    # def get_form(self, form_class=None):
-    #     form = super().get_form(form_class)
-    #     form.fields['password'].widget = forms.PasswordInput()
-    #     return form
-
-    #
-    # def form_valid(self, form):
-    #     form.instance.created_by = self.request.user
-    #     self.object = form.save()
-    #     return super().form_valid(form)
+    def get_context_data(self, **kwargs):
+        context = super(CreateUserView, self).get_context_data(**kwargs)
+        context["title"] = "Sign Up"
+        return context

@@ -2,7 +2,7 @@
 {% load static %}
 {% load bootstrap4 %}
 
-{% block head_title %}Sign In{% endblock %}
+{% block head_title %}{{ title }}{% endblock %}
 
 {% block content %}
 
@@ -18,26 +18,31 @@
                    width="70" height="70" style="margin-top:-40px;"
                      class="d-inline-block align-top rounded mx-auto d-block" alt="">
 
-                <h1 class="display-5 text-center">Sign in</h1>
+                <h1 class="display-5 text-center">{{ title }}</h1>
 
                 <div class="container">
 
                 <form method="POST" action="">{% csrf_token %}
+
                     <div class="form-group">
 
-                        {% bootstrap_form form show_label=False %}
+                        <div class="form-row" style="margin-bottom:15px;">
 
-                        <div class="align-self-center">
+                            {% bootstrap_field form.first_name form_group_class='col-md-6' layout='inline' error_types='all' %}
+                            {% bootstrap_field form.last_name form_group_class='col-md-6' layout='inline' error_types='all' %}
+
+                        </div>
+
+                        {% bootstrap_field form.email layout='inline' error_types='all' %}
+                        {% bootstrap_field form.content layout='inline' error_types='all' %}
+
+                        <div class="align-self-center" style="margin-bottom:-40px;">
                             <button type="submit" class="btn btn-primary form-control">Send</button>
                         </div>
+
                     </div>
 
                 </form>
-
-                </div>
-
-                    <p class="font-weight-light text-center" style="margin-bottom:-40px;">No account?
-                        <a class="" href="{% url 'users:signup' %}">Sign up here</a></p>
 
                 </div>
 
@@ -45,7 +50,9 @@
 
         </div>
 
-    </div>
+      </div>
+
+  </div>
 
 </div>
 

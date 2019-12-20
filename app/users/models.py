@@ -9,6 +9,9 @@ from django.db import models
 import uuid
 
 
+BLOGPOST_MODEL = "blog.BlogPost"
+
+
 class UserManager(BaseUserManager):
     def create_user(self, first_name, last_name, email, password=None, **extra_fields):
         """Creates and saves a new user"""
@@ -78,8 +81,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     followers = models.ManyToManyField("self", related_name="followers", blank=True)
     blocked = models.ManyToManyField("self", related_name="blocked", blank=True)
 
-    posts = models.ManyToManyField("blog.BlogPost", related_name="posts", blank=True)
-    liked = models.ManyToManyField("blog.BlogPost", related_name="liked", blank=True)
+    posts = models.ManyToManyField(BLOGPOST_MODEL, related_name="posts", blank=True)
+    liked = models.ManyToManyField(BLOGPOST_MODEL, related_name="liked", blank=True)
     comments = ArrayField(
         models.TextField(blank=False, null=False), blank=False, null=True
     )

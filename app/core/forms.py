@@ -8,6 +8,6 @@ class Contact_Form(forms.Form):
     content = forms.CharField(
         required=True,
         widget=forms.Textarea(
-            attrs={"placeholder": "Let us know what you are thinking"}
+            attrs={"placeholder": "Let us know what you are thinking", "rows": "4"}
         ),
     )

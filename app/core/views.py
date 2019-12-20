@@ -20,7 +20,7 @@ def contact_page(request):
             "first_name": form.cleaned_data["first_name"],
             "last_name": form.cleaned_data["last_name"],
         }
-        return render(request, "core/thankyou.html", context)
+        return render(request, "core/thank_you.html", context)
 
     if request.user.is_authenticated:
         form.fields["first_name"].initial = request.user.first_name
@@ -31,7 +31,7 @@ def contact_page(request):
         form.fields["email"].widget.attrs["readonly"] = True
         form.fields["content"].widget.attrs[
             "placeholder"
-        ] = f"Hi {request.user.first_name}, Let us know what you are thinking"
+        ] = f"Hi {request.user.first_name}, let us know what you are thinking"
         form.fields["content"].widget.attrs["autofocus"] = "autofocus"
     else:
         form.fields["first_name"].widget.attrs["autofocus"] = "autofocus"

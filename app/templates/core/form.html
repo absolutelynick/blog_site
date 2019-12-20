@@ -6,17 +6,16 @@
 
 {% block content %}
 
-<div class="container">
-  <div class="row">
+  <div class="row" style="margin-top:30px;">
+
       <div class="col-6 mx-auto">
 
-        <div class="container" style="margin-top:30px;">
+        <div class="container" style="border: 1px solid lightgrey">
 
-            <div class="jumbotron jumbotron-fluid">
+            <div class="jumbotron jumbotron-fluid bg-white" style="padding-top: 30px">
 
                 <img src="{% static "images/icons/blog.png"%}"
-                   width="70" height="70" style="margin-top:-40px;"
-                     class="d-inline-block align-top rounded mx-auto d-block" alt="">
+                   width="70" height="70" class="mx-auto d-block" alt="Blog Icon">
 
                 <h1 class="display-5 text-center">{{ title }}</h1>
 
@@ -36,11 +35,11 @@
                         {% bootstrap_field form.email layout='inline' error_types='all' %}
                         {% bootstrap_field form.content layout='inline' error_types='all' %}
 
-                        <div class="align-self-center" style="margin-bottom:-40px;">
+                    </div>
+
+                        <div class="align-self-center" style="margin-bottom: -40px;">
                             <button type="submit" class="btn btn-primary form-control">Send</button>
                         </div>
-
-                    </div>
 
                 </form>
 
@@ -54,6 +53,5 @@
 
   </div>
 
-</div>
 
 {% endblock %}

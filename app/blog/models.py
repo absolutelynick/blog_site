@@ -3,19 +3,21 @@ from django.contrib.postgres.fields import ArrayField
 
 import uuid
 
+USERS_MODEL = "users.User"
+
 
 class BlogPost(models.Model):
     title = models.CharField(max_length=155)
     slug = models.SlugField(max_length=50, null=True, unique=True)
-    content = models.TextField(null=True, blank=True, unique=True)
+    content = models.TextField(null=True, blank=True)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
-    liked_by = models.ManyToManyField("users.User", blank=True)
+    liked_by = models.ManyToManyField(USERS_MODEL, blank=True)
     hashtags = ArrayField(
-        models.TextField(blank=False, null=False), blank=False, null=True
+        models.TextField(blank=True, null=False), blank=True, null=True
     )
     posted_by = models.ForeignKey(
-        "users.User", null=True, related_name="owner", on_delete=models.SET_NULL
+        USERS_MODEL, null=True, related_name="owner", on_delete=models.SET_NULL
     )
 
     date_created = models.DateTimeField(auto_now_add=True)

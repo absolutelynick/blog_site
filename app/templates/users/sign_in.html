@@ -6,17 +6,16 @@
 
 {% block content %}
 
-<div class="container">
-  <div class="row">
+  <div class="row" style="margin-top:30px;">
+
       <div class="col-6 mx-auto">
 
-        <div class="container" style="margin-top:30px;">
+        <div class="container" style="border: 1px solid lightgrey">
 
-            <div class="jumbotron jumbotron-fluid">
+            <div class="jumbotron jumbotron-fluid bg-white" style="padding-top: 30px">
 
                 <img src="{% static "images/icons/blog.png"%}"
-                   width="70" height="70" style="margin-top:-40px;"
-                     class="d-inline-block align-top rounded mx-auto d-block" alt="">
+                   width="70" height="70" class="mx-auto d-block" alt="Blog">
 
                 <h1 class="display-5 text-center">Sign in</h1>
 
@@ -37,7 +36,7 @@
                 </div>
 
                     <p class="font-weight-light text-center" style="margin-bottom:-40px;">No account?
-                        <a class="" href="{% url 'users:signup' %}">Sign up here</a></p>
+                        <a class="" href="{% url 'users:sign_up' %}">Sign up here</a></p>
 
                 </div>
 
@@ -47,6 +46,6 @@
 
     </div>
 
-</div>
+
 
 {% endblock %}

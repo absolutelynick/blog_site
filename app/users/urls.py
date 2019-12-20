@@ -1,22 +1,36 @@
 from django.urls import path
-from django.contrib.auth import views as auth_views
+from django.contrib.auth.views import LoginView as SignInView, LogoutView as SignOutView
 
-from .views import ThanksPage, CreateUserView, ProfileView
+from .views import (
+    ThanksPage,
+    CreateUserView,
+    ProfileView,
+    PasswordResetView,
+    PasswordChangeView,
+    PasswordResetEmailSentView,
+)
 
 app_name = "users"
 
 urlpatterns = [
     path(
-        "login/",
-        auth_views.LoginView.as_view(template_name="users/login.html"),
-        name="login",
+        "sign_in/",
+        SignInView.as_view(template_name="users/sign_in.html"),
+        name="sign_in",
     ),
     path(
-        "logout/",
-        auth_views.LogoutView.as_view(template_name="core/home.html"),
-        name="logout",
+        "sign_out/",
+        SignOutView.as_view(template_name="core/home.html"),
+        name="sign_out",
     ),
-    path("signup/", CreateUserView.as_view(), name="signup"),
+    path("sign_up/", CreateUserView.as_view(), name="sign_up"),
     path("profile/", ProfileView.as_view(), name="profile"),
-    path("thanks/", ThanksPage.as_view(), name="thanks"),
+    path("thank_you/", ThanksPage.as_view(), name="thank_you"),
+    path(
+        "reset_email_sent/",
+        PasswordResetEmailSentView.as_view(),
+        name="reset_email_sent",
+    ),
+    path("reset_password/", PasswordResetView.as_view(), name="reset_password"),
+    path("change_password/", PasswordChangeView.as_view(), name="change_password"),
 ]

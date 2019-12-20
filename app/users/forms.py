@@ -13,6 +13,11 @@ class UserCreateForm(UserCreationForm):
     password1 = forms.CharField(
         label="Password", widget=forms.PasswordInput, validators=[validate_password]
     )
+    password2 = forms.CharField(
+        label="Confirm Password",
+        widget=forms.PasswordInput,
+        validators=[validate_password],
+    )
 
     class Meta:
         fields = (

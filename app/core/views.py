@@ -20,7 +20,7 @@ def contact_page(request):
             "first_name": form.cleaned_data["first_name"],
             "last_name": form.cleaned_data["last_name"],
         }
-        return render(request, "core/thank_you.html", context)
+        return render(request, "core/thank_you_for_signing_up.html", context)
 
     if request.user.is_authenticated:
         form.fields["first_name"].initial = request.user.first_name

@@ -5,6 +5,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils.translation import gettext_lazy as _
 
 from .forms import UserCreateForm
 
@@ -30,7 +31,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 class ThanksPage(TemplateView):
     """Thank you for signing up page"""
 
-    template_name = "users/thank_you.html"
+    template_name = "users/thank_you_for_signing_up.html"
 
     def get(self, request, *args, **kwargs):
         context = {"title": "Thank you"}
@@ -56,6 +57,7 @@ class PasswordResetView(auth_views.PasswordResetView):
 
     template_name = "users/password_reset_form.html"
     success_url = reverse_lazy("users:reset_email_sent")
+    email_template_name = "users/password_reset_email.html"
 
     def get_context_data(self, **kwargs):
         context = super(PasswordResetView, self).get_context_data(**kwargs)
@@ -63,8 +65,8 @@ class PasswordResetView(auth_views.PasswordResetView):
         return context
 
 
-class PasswordResetEmailSentView(TemplateView):
-    """Thank you reseting your password"""
+class PasswordSendResetEmailView(TemplateView):
+    """Resetting your password thank you"""
 
     template_name = "users/thank_you_for_resetting.html"
 
@@ -83,3 +85,16 @@ class PasswordChangeView(auth_views.PasswordChangeView):
         context = super(PasswordChangeView, self).get_context_data(**kwargs)
         context["title"] = "Change Password"
         return context
+
+
+class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
+    """Confirm the change"""
+
+    template_name = "users/password_reset_confirm.html"
+    success_url = reverse_lazy("users:password_reset_complete")
+
+
+class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
+    """Completed change password process that the password was changed"""
+
+    template_name = "users/password_reset_complete.html"

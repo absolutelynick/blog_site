@@ -162,3 +162,9 @@ LOGIN_REDIRECT_URL = "home"
 AUTH_USER_MODEL = "users.User"
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+MEDIA_URL = "/media/"
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
+
+USER_PICTURE_DIR = os.path.join(MEDIA_ROOT, "users/user_images")

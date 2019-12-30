@@ -1,17 +1,25 @@
-{% extends 'base.html' %}
-
-{% block head_title %}{{error_title}}{% endblock %}
-
+{% extends "base.html" %}
+{% load bootstrap4 %}
 {% block content %}
 
-    <h1>{{error_title}}</h1>
 
-    {{error_text}}
+<div class="jumbotron text-center bg-white" style="margin: 50px;">
+
+  <h1 class="display-5">{{error_title}}</h1>
+  <p class="lead">{{error_text}}
+      .</p>
+  <hr class="my-4">
+  <p>Click below to head to the home page.</p>
 
     {% if content.exception %}
 
-        <b>exception</b>
+        <b>content.exception</b>
 
     {% endif %}
+
+  <a class="btn btn-primary btn-lg" href="{% url 'home' %}" role="button">Home Page</a>
+
+</div>
+
 
 {% endblock %}

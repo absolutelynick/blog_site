@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.conf import settings
+
 from .forms import Contact_Form
 
 
@@ -14,7 +16,9 @@ def contact_page(request):
     form = Contact_Form(request.POST or None)
 
     if form.is_valid():
-        print(form.cleaned_data)
+        if settings.DEBUG:
+            print(form.cleaned_data)
+
         context = {
             "title": "Contact Us",
             "first_name": form.cleaned_data["first_name"],
@@ -42,8 +46,8 @@ def contact_page(request):
 
 def custom_400_page(request, exc):
     context = {
-        "error_title": "500 Error",
-        "error_text": "Sorry but there has been a server error",
+        "error_title": "400 Error",
+        "error_text": "The page was not found",
         "exception": str(exc),
     }
     return render(request, "error.html", context)
@@ -51,8 +55,8 @@ def custom_400_page(request, exc):
 
 def custom_403_page(request, exc):
     context = {
-        "error_title": "500 Error",
-        "error_text": "Sorry but there has been a server error",
+        "error_title": "403 Error",
+        "error_text": "This page is forbidden",
         "exception": str(exc),
     }
     return render(request, "error.html", context)
@@ -60,8 +64,8 @@ def custom_403_page(request, exc):
 
 def custom_404_page(request, exc):
     context = {
-        "error_title": "500 Error",
-        "error_text": "Sorry but there has been a server error",
+        "error_title": "404 Error",
+        "error_text": "The page was not found",
         "exception": str(exc),
     }
     return render(request, "error.html", context)
@@ -70,7 +74,11 @@ def custom_404_page(request, exc):
 def custom_500_page(request):
     context = {
         "error_title": "500 Error",
-        "error_text": "Sorry but there has been a server error",
+        "error_text": "There has been an internal server error",
         "exception": None,
     }
     return render(request, "error.html", context)
+
+
+def error_page(request):
+    return custom_404_page(request, "404")

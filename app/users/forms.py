@@ -4,6 +4,10 @@ from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 
+import datetime
+
+YEAR = datetime.datetime.now().year + 1
+
 
 class UserCreateForm(UserCreationForm):
     first_name = forms.CharField()
@@ -29,3 +33,49 @@ class UserCreateForm(UserCreationForm):
             "password2",
         )
         model = get_user_model()
+
+
+class DateInput(forms.DateInput):
+    input_type = "date"
+
+
+class UserEditForm(forms.ModelForm):
+    first_name = forms.CharField()
+    last_name = forms.CharField()
+    username = forms.CharField()
+
+    email = forms.EmailField()
+
+    date_of_birth = forms.DateField(
+        label='Date of Birth',
+        widget=forms.widgets.DateInput(
+            format = ('%d/%m/%Y'),
+            attrs={"class": "datepicker", }
+        )
+    )
+
+    about = forms.CharField(
+        max_length=255,
+        widget=forms.Textarea(
+            attrs={"placeholder": "About me...", "rows": "3", "required": True}
+        ),
+    )
+
+    website = forms.URLField()
+
+    picture = forms.ImageField()
+
+    class Meta:
+        model = get_user_model()
+        fields = (
+            "first_name",
+            "last_name",
+            "email",
+            "gender",
+            "date_of_birth",
+            "username",
+            "about",
+            "website",
+            "country",
+            "picture",
+        )

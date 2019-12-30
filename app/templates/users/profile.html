@@ -10,6 +10,11 @@
 
     {% if user.is_authenticated %}
 
+        <p class="text-center">Welcome to your profile. You can
+            <a href="{% url "users:profile_edit" %}">edit your profile</a> or
+            <a href="{% url "users:change_password" %}">change your password</a>.</p>
+
+
         <img src="{{ image }}" height="200" width="200" class="rounded-circle float-left" alt="Profile Picture">
 
     {% else %}

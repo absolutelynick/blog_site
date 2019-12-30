@@ -5,10 +5,11 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.decorators import login_required
+from django.conf import settings
 
-from .forms import UserCreateForm
-
+from .forms import UserCreateForm, UserEditForm
+import os
 
 class ProfileView(LoginRequiredMixin, TemplateView):
     """Profile Page"""
@@ -19,13 +20,81 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         user = request.user
 
         if user.has_picture:
-            profile_pic = user.profile_picture_path
+            profile_pic = user.get_profile_picture_path()
         else:
-            placeholder = static("images/users/placeholder.png")
-            profile_pic = placeholder
+            profile_pic = os.path.join(
+                settings.MEDIA_ROOT, "users/placeholder.png"
+            )
 
         context = {"title": f"{user.full_name} {user}", "image": profile_pic}
         return render(request, self.template_name, context=context)
+
+
+class ProfileEditView(LoginRequiredMixin, TemplateView):
+    """Profile Edit Page"""
+
+    template = "users/profile_edit.html"
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        # form = UserEditForm(request.POST)
+
+        if request.method == "POST":
+            form = UserEditForm(
+                instance=request.user, data=request.POST, files=request.FILES
+            )
+            if form.is_valid():
+                form.save()
+        else:
+            form = UserEditForm(instance=request.user)
+
+            # Profile Picture
+
+            if user.has_picture:
+                profile_pic = user.profile_picture_path
+            else:
+                placeholder = static("images/users/placeholder.png")
+                profile_pic = placeholder
+
+            # Profile fields
+
+            form.fields["first_name"].initial = request.user.first_name
+            form.fields["first_name"].widget.attrs["autofocus"] = "autofocus"
+
+            form.fields["last_name"].initial = request.user.last_name
+            form.fields["email"].initial = request.user.email
+            form.fields["username"].initial = request.user.username or None
+            form.fields["gender"].initial = request.user.gender or None
+            form.fields["date_of_birth"].initial = request.user.date_of_birth or None
+            form.fields["about"].initial = request.user.about or None
+            form.fields["website"].initial = request.user.website or None
+            form.fields["country"].initial = request.user.country or None
+            form.fields["picture"].initial = request.user.picture or None
+
+        context = {"title": f"Edit Profile", "image": profile_pic, "form": form}
+        return render(request, self.template, context=context)
+
+
+@login_required
+def save_edit(request):
+    """Save the edited form"""
+    if request.method == "POST":
+        form = UserEditForm(
+            instance=request.user, data=request.POST, files=request.FILES
+        )
+
+        if form.is_valid():
+
+            if request.POST["picture"]:
+                print("request.FILES: ", request.FILES)
+                print("request.FILES['picture']: ", request.FILES['picture'].name)
+
+                request.user.picture = form.cleaned_data["picture"]
+                request.user.save_profile_pic(request.FILES['picture'].name)
+
+            form.save()
+
+            return ProfileView().get(request)
 
 
 class ThanksPage(TemplateView):

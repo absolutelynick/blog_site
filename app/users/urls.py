@@ -1,15 +1,19 @@
-from django.urls import path, include
+from django.urls import path
 from django.contrib.auth.views import LoginView as SignInView, LogoutView as SignOutView
+from django.conf import settings
+from django.conf.urls.static import static
 
 from .views import (
     ThanksPage,
     CreateUserView,
     ProfileView,
+    ProfileEditView,
     PasswordResetView,
     PasswordChangeView,
     PasswordSendResetEmailView,
     PasswordResetConfirmView,
     PasswordResetCompleteView,
+    save_edit,
 )
 
 app_name = "users"
@@ -27,6 +31,8 @@ urlpatterns = [
     ),
     path("sign_up/", CreateUserView.as_view(), name="sign_up"),
     path("profile/", ProfileView.as_view(), name="profile"),
+    path("profile_edit/", ProfileEditView.as_view(), name="profile_edit"),
+    path("profile_save/", save_edit, name="save_edit"),
     path("thank_you/", ThanksPage.as_view(), name="thank_you"),
     path(
         "reset_email_sent/",
@@ -46,3 +52,6 @@ urlpatterns = [
         name="password_reset_complete",
     ),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

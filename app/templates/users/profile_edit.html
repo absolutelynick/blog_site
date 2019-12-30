@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+{% load bootstrap4 %}
+
+{% block head_title %}{{ title }}{% endblock %}
+
+{% block content %}
+
+  <div class="row" style="margin-top:30px;">
+
+      <div class="col-6 mx-auto">
+
+        <div class="container" style="border: 1px solid lightgrey">
+
+            <div class="jumbotron jumbotron-fluid bg-white" style="padding-top: 30px">
+
+                <img src="{% static "images/icons/blog.png"%}"
+                   width="70" height="70" class="mx-auto d-block" alt="Blog">
+
+                <h1 class="display-5 text-center">Edit Profile</h1>
+
+                <div class="text-center" >You can edit your profile using the following form<div><br>
+
+                <div class="container">
+
+                <form method="POST" action="{% url 'users:save_edit' %}" enctype="multipart/form-data">{% csrf_token %}
+
+                    <div class="form-group">
+
+                        <div class="form-row" style="margin-bottom:15px;">
+                            {% bootstrap_field form.first_name form_group_class='col-md-6' layout='inline' error_types='all' %}
+                            {% bootstrap_field form.last_name form_group_class='col-md-6' layout='inline' error_types='all' %}
+                        </div>
+
+                        {% bootstrap_field form.email layout='inline' error_types='all' %}
+                        {% bootstrap_field form.gender layout='inline' error_types='all' %}
+
+                        {% bootstrap_field form.date_of_birth layout='inline' error_types='all' %}
+
+                        {% bootstrap_field form.username layout='inline' error_types='all' %}
+
+
+                        {% bootstrap_field form.about layout='inline' error_types='all' %}
+                        {% bootstrap_field form.website layout='inline' error_types='all' %}
+                        {% bootstrap_field form.country layout='inline' error_types='all' %}
+
+                        {% bootstrap_field form.picture layout='inline' error_types='all' %}
+{#                        <input type="file" name="picture" accept="image/*" class="form-control-file" title="" id="id_picture">#}
+
+                        <div class="align-self-center">
+                            <button type="submit" value="Save changes" class="btn btn-primary form-control">Save</button>
+                        </div>
+
+                    </div>
+
+                </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+      </div>
+
+  </div>
+
+{% endblock %}

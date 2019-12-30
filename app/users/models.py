@@ -5,8 +5,12 @@ from django.contrib.auth.models import (
 )
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.conf import settings
 
-import uuid
+from api.constants.country_codes import COUNTRIES_ORDERED_DICT
+
+import uuid, os, shutil
+from datetime import datetime
 
 
 BLOGPOST_MODEL = "blog.BlogPost"
@@ -45,7 +49,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     GENDERS = [
         (GENDER_MALE, "Male"),
         (GENDER_FEMALE, "Female"),
-        (GENDER_UNKNOWN, "Unknown"),
+        (GENDER_UNKNOWN, "Prefer not to say"),
     ]
 
     USERNAME_FIELD = "email"
@@ -56,6 +60,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     gender = models.CharField(
         db_index=True, choices=GENDERS, default=GENDER_UNKNOWN, blank=True, max_length=1
     )
+    date_of_birth = models.DateField(blank=True, null=True)
 
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(max_length=255, unique=True)
@@ -66,12 +71,18 @@ class User(AbstractBaseUser, PermissionsMixin):
         "date modified", auto_now=True, null=True, blank=True
     )
     about = models.CharField(max_length=255, null=True, blank=True)
-    website = models.CharField(max_length=255, null=True, blank=True)
-    country = models.CharField(max_length=255, null=True, blank=True)
+    website = models.URLField(max_length=255, null=True, blank=True)
+
+    COUNTRY_UNKNOWN = "None"
+    COUNTRY_NAMES_LIST = [("--", "None")] + COUNTRIES_ORDERED_DICT
+    country = models.CharField(
+        max_length=255, choices=COUNTRY_NAMES_LIST, default=COUNTRY_UNKNOWN, blank=True
+    )
 
     picture_updated = models.DateTimeField(null=True)
     picture_file_path = models.CharField(max_length=128, null=True)
     picture_file_type = models.CharField(max_length=5, null=True)
+    picture = models.ImageField(upload_to=picture_file_path, blank=True)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -94,15 +105,63 @@ class User(AbstractBaseUser, PermissionsMixin):
     def full_name(self):
         return f"{self.first_name} {self.last_name}"
 
-    @property
     def profile_picture_path(self):
-        if self.has_picture:
-            return self.picture_file_path
-        return None
+        return self.get_profile_picture_path()
+
+    def get_profile_picture_path(self, file_type=None, raises=False):
+        if file_type is None:
+            if self.picture_file_type is None:
+                raise IOError("User profile picture not found.")
+            file_type = self.picture_file_type
+
+        file_path = os.path.join(
+            settings.USER_PICTURE_DIR, f"{str(self.uuid)}.{file_type}"
+        )
+        return file_path
 
     @property
     def has_picture(self):
         return self.picture_file_type is not None
+
+    def save_profile_pic(self, picture_file):
+        file_type = picture_file.split(".")[-1]
+        file_location = self.get_profile_picture_path(file_type)
+
+        print(1)
+        print(f"picture_file: {picture_file}, {type(picture_file)}")
+        print(f"file_type: {file_type}")
+        print(f"file_location: {file_location}, {type(file_location)}")
+        print(f"os.path.dirname(file_location): {os.path.dirname(file_location)}")
+
+        folder_location = os.path.dirname(file_location)
+        if not os.path.exists(folder_location):
+            os.makedirs(folder_location)
+        print(2)
+
+        with open(file_location, "wb") as f:
+            shutil.copyfileobj(open(picture_file, "rb"), f)
+        print(3)
+
+        self.picture_updated = datetime.utcnow()
+        self.date_modified = datetime.utcnow()
+        print(4)
+
+        self.picture_file_type = file_type
+        print(5)
+
+        self.picture_file_path = file_location
+        self.picture = file_location
+        print(6)
+
+        self.save()
+
+    def save(self, *args, **kwargs):
+        print("user.save: args: ", args)
+        print("user.save: kwargs: ", kwargs)
+
+        self.date_modified = datetime.utcnow()
+
+        super(User, self).save(*args, **kwargs)
 
     class Meta(object):
         verbose_name = "user"

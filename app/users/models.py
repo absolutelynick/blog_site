@@ -109,15 +109,13 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.get_profile_picture_path()
 
     def get_profile_picture_path(self, file_type=None, raises=False):
-        if file_type is None:
-            if self.picture_file_type is None:
-                raise IOError("User profile picture not found.")
-            file_type = self.picture_file_type
+        if (self.picture is None) or (os.path.exists(self.picture_file_path) == False):
+            return os.path.join(settings.MEDIA_ROOT, "users/placeholder.png")
 
-        file_path = os.path.join(
-            settings.USER_PICTURE_DIR, f"{str(self.uuid)}.{file_type}"
+        return os.path.join(
+            settings.USER_PICTURE_DIR,
+            f"{str(self.uuid)}.{file_type or self.picture_file_type}",
         )
-        return file_path
 
     @property
     def has_picture(self):
@@ -127,41 +125,41 @@ class User(AbstractBaseUser, PermissionsMixin):
         file_type = picture_file.split(".")[-1]
         file_location = self.get_profile_picture_path(file_type)
 
-        print(1)
-        print(f"picture_file: {picture_file}, {type(picture_file)}")
-        print(f"file_type: {file_type}")
-        print(f"file_location: {file_location}, {type(file_location)}")
-        print(f"os.path.dirname(file_location): {os.path.dirname(file_location)}")
+        if settings.DEBUG:
+            print(f"save_profile_pic: picture_file: {picture_file}")
+            print(f"save_profile_pic: file_location: {file_location}")
 
         folder_location = os.path.dirname(file_location)
         if not os.path.exists(folder_location):
             os.makedirs(folder_location)
-        print(2)
 
         with open(file_location, "wb") as f:
             shutil.copyfileobj(open(picture_file, "rb"), f)
-        print(3)
 
         self.picture_updated = datetime.utcnow()
-        self.date_modified = datetime.utcnow()
-        print(4)
-
         self.picture_file_type = file_type
-        print(5)
-
         self.picture_file_path = file_location
         self.picture = file_location
-        print(6)
 
         self.save()
 
     def save(self, *args, **kwargs):
-        print("user.save: args: ", args)
-        print("user.save: kwargs: ", kwargs)
-
         self.date_modified = datetime.utcnow()
-
         super(User, self).save(*args, **kwargs)
+
+    @property
+    def fields(self):
+        return {
+            "First name": self.first_name,
+            "Last name": self.last_name,
+            "Gender": self.gender,
+            "DOB": self.date_of_birth,
+            "Username": self.username,
+            "Email": self.email,
+            "Date Joined": self.date_joined,
+            "About": self.about,
+            "Website": self.website,
+        }
 
     class Meta(object):
         verbose_name = "user"

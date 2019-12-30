@@ -3,13 +3,13 @@ from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
-from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from django.contrib import messages
 
 from .forms import UserCreateForm, UserEditForm
-import os
+
 
 class ProfileView(LoginRequiredMixin, TemplateView):
     """Profile Page"""
@@ -18,15 +18,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
     def get(self, request, *args, **kwargs):
         user = request.user
-
-        if user.has_picture:
-            profile_pic = user.get_profile_picture_path()
-        else:
-            profile_pic = os.path.join(
-                settings.MEDIA_ROOT, "users/placeholder.png"
-            )
-
-        context = {"title": f"{user.full_name} {user}", "image": profile_pic}
+        context = {"title": f"{user.full_name}"}
         return render(request, self.template_name, context=context)
 
 
@@ -50,11 +42,7 @@ class ProfileEditView(LoginRequiredMixin, TemplateView):
 
             # Profile Picture
 
-            if user.has_picture:
-                profile_pic = user.profile_picture_path
-            else:
-                placeholder = static("images/users/placeholder.png")
-                profile_pic = placeholder
+            profile_pic = user.get_profile_picture_path()
 
             # Profile fields
 
@@ -71,7 +59,7 @@ class ProfileEditView(LoginRequiredMixin, TemplateView):
             form.fields["country"].initial = request.user.country or None
             form.fields["picture"].initial = request.user.picture or None
 
-        context = {"title": f"Edit Profile", "image": profile_pic, "form": form}
+        context = {"title": "Edit Profile", "form": form}
         return render(request, self.template, context=context)
 
 
@@ -85,16 +73,25 @@ def save_edit(request):
 
         if form.is_valid():
 
-            if request.POST["picture"]:
+            if settings.DEBUG:
                 print("request.FILES: ", request.FILES)
-                print("request.FILES['picture']: ", request.FILES['picture'].name)
+                print("request.POST: ", request.POST)
 
-                request.user.picture = form.cleaned_data["picture"]
-                request.user.save_profile_pic(request.FILES['picture'].name)
+            if request.POST["picture"]:
+                request.user.save_profile_pic(request.POST["picture"])
 
             form.save()
 
-            return ProfileView().get(request)
+            messages.success(request, "Profile updated successfully.")
+
+        else:
+            messages.error(request, "Error updating your profile. Please fix the issues to save your changes.")
+    else:
+        form = UserEditForm(instance=request.user)
+
+    return render(request,
+                  "users/profile_edit.html",
+                  {"title": "Edit Profile", "form": form})
 
 
 class ThanksPage(TemplateView):

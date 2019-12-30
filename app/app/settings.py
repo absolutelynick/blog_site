@@ -11,10 +11,9 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-import os.path as path
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = path.abspath(path.join(__file__, "../.."))
+BASE_DIR = os.path.abspath(os.path.join(__file__, "../.."))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -27,13 +26,11 @@ SECRET_KEY = os.environ.get(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ALLOWED_HOSTS = (
-    ["0.0.0.0", "127.0.0.1"] if DEBUG else ["pythonanywhere.com"]
-)
+ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1"] if DEBUG else ["pythonanywhere.com"]
 
 # Sentry Errors
 
-if not DEBUG:
+if DEBUG == False:
     import sentry_sdk
     from sentry_sdk.integrations.django import DjangoIntegration
 

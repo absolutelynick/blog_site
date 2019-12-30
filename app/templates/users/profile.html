@@ -6,74 +6,53 @@
 
 {% block content %}
 
-<div class="jumbotron text-center" style="margin: 30px; background-color: white;">
-
-    {% if user.is_authenticated %}
-
-        <p class="text-center">Welcome to your profile. You can
-            <a href="{% url "users:profile_edit" %}">edit your profile</a> or
-            <a href="{% url "users:change_password" %}">change your password</a>.</p>
+<p class="text-center">Welcome to your profile. You can
+    <a href="{% url "users:profile_edit" %}">edit your profile</a> <b>or</b>
+<a href="{% url "users:change_password" %}">change your password</a>.</p>
 
 
-        <img src="{{ image }}" height="200" width="200" class="rounded-circle float-left" alt="Profile Picture">
+  <div class="row" style="margin-top:30px;">
 
-    {% else %}
+      <div class="col-6 mx-auto">
 
+        <div class="container" style="border: 1px solid lightgrey">
 
-    {% endif %}
+            <div class="jumbotron jumbotron-fluid bg-white" style="padding-top: 30px">
 
+                <img src="https://cdn.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png"
+                   width="130" height="130" class="mx-auto d-block" alt="Blog" style="border-radius: 100%;">
 
-    <div class="">First Name: {{ user.first_name }}</div><br>
-    <div class="">Float right on all viewport sizes</div><br>
-    <div class="">Float right on all viewport sizes</div><br>
+                <h1 class="display-5 text-center">Edit Profile</h1>
 
+                <div class="text-center" >You can edit your profile using the following form<div><br>
 
+                <div class="container">
 
+                    {% for field, value in user.fields.items %}
 
-{#    {% for obj in object_list %}#}
-{##}
-{#        <div class="jumbotron">#}
-{#          <h1 class="display-6">Post</h1>#}
-{#          <p class="lead">{{ obj.title }}</p>#}
-{#          <hr class="my-5">{{ obj.content }}#}
-{#          <p class="lead">#}
-{#            <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>#}
-{#          </p>#}
-{#        </div>#}
-{##}
-{#    {% endfor %}#}
+                      <div class="row"><div class="col text-right">
+                          <b>{{ field }}:
+                          </b>
+                      </div>
+                          <div class="col text-left">
+                              {{ value }}
+                          </div>
+                      </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+      </div>
+
+  </div>
+
 
 </div>
 
 
 {% endblock %}
-
-{#                Edit Profile#}
-{#                Edit Password#}
-{#                Edit Privacy#}
-{#                Login Activity#}
-{#                Report a Problem#}
-{#                Log Out#}
-
-
-{#            <a class="nav-link" data-toggle="modal" data-target="#exampleModalCenter" href="#">#}
-{#                <img src="{% static "images/icons/user.png"%}"#}
-{#                    width="35" height="35" alt="Login"#}
-{#                    title="Click here to login">#}
-{#            </a>#}
-{##}
-{##}
-{#    <div class="modal fade align-middle" id="exampleModalCenter" tabindex="-1" role="dialog"#}
-{#         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">#}
-{#      <div class="modal-dialog modal-dialog-centered" role="document">#}
-{#        <div class="modal-content">#}
-{#            <a href="{% url 'home' %}" class="list-group-item list-group-item-action text-center">Home</a>#}
-{#            <a href="{% url 'about' %}" class="list-group-item list-group-item-action text-center">About</a>#}
-{#            <a href="{% url 'contact' %}" class="list-group-item list-group-item-action text-center">Contact</a>#}
-{#            <a href="#" class="list-group-item list-group-item-action text-center">Profile</a>#}
-{#            <a href="{% url 'blog' %}" class="list-group-item list-group-item-action text-center">Posts</a>#}
-{#            <a href="{% url 'users:logout' %}" class="list-group-item list-group-item-action text-center">Log Out</a>#}
-{#            <a href="#" class="list-group-item list-group-item-action text-center" data-dismiss="modal">Close</a>#}
-{#        </div>#}
-{#      </div>#}
-{#    </div>#}

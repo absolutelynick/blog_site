@@ -47,11 +47,10 @@ class UserEditForm(forms.ModelForm):
     email = forms.EmailField()
 
     date_of_birth = forms.DateField(
-        label='Date of Birth',
+        label="Date of Birth",
         widget=forms.widgets.DateInput(
-            format = ('%d/%m/%Y'),
-            attrs={"class": "datepicker", }
-        )
+            format=("%d/%m/%Y"), attrs={"class": "datepicker"}
+        ),
     )
 
     about = forms.CharField(
@@ -62,8 +61,6 @@ class UserEditForm(forms.ModelForm):
     )
 
     website = forms.URLField()
-
-    picture = forms.ImageField()
 
     class Meta:
         model = get_user_model()

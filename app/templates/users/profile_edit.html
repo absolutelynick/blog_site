@@ -23,7 +23,7 @@
 
                 <div class="container">
 
-                <form method="POST" action="{% url 'users:save_edit' %}" enctype="multipart/form-data">{% csrf_token %}
+                <form method="POST" action="{% url 'users:save_edit' %}">{% csrf_token %}
 
                     <div class="form-group">
 
@@ -45,7 +45,6 @@
                         {% bootstrap_field form.country layout='inline' error_types='all' %}
 
                         {% bootstrap_field form.picture layout='inline' error_types='all' %}
-{#                        <input type="file" name="picture" accept="image/*" class="form-control-file" title="" id="id_picture">#}
 
                         <div class="align-self-center">
                             <button type="submit" value="Save changes" class="btn btn-primary form-control">Save</button>

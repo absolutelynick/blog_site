@@ -30,15 +30,15 @@
 
                     {% for field, value in user.fields.items %}
 
-                      <div class="row"><div class="col text-right">
-                          <b>{{ field }}:
-                          </b>
-                      </div>
-                          <div class="col text-left">
-                              {{ value }}
-                          </div>
-                      </div>
-
+                        {% if field == "Website" %}
+                            <b><br><a href="{{ value }}">Your Webite</a></br>
+                        {% else %}
+                              <div class="row"><div class="col text-right">
+                                  <b>{{ field }}:</b>
+                              </div>
+                                  <div class="col text-left">{{ value }}</div>
+                              </div>
+                        {% endif %}
                     {% endfor %}
 
                 </div>

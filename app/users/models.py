@@ -152,7 +152,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return {
             "First name": self.first_name,
             "Last name": self.last_name,
-            "Gender": self.gender,
+            "Gender": dict(self.GENDERS).get(str(self.date_of_birth), "Prefer not to say"),
             "DOB": self.date_of_birth,
             "Username": self.username,
             "Email": self.email,

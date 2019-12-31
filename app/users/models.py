@@ -99,7 +99,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
 
     def __str__(self):
-        return f"@{self.username}"
+        return f"{self.username}"
 
     @property
     def full_name(self):
@@ -152,7 +152,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         return {
             "First name": self.first_name,
             "Last name": self.last_name,
-            "Gender": dict(self.GENDERS).get(str(self.date_of_birth), "Prefer not to say"),
+            "Gender": dict(self.GENDERS).get(
+                str(self.date_of_birth), "Prefer not to say"
+            ),
             "DOB": self.date_of_birth,
             "Username": self.username,
             "Email": self.email,

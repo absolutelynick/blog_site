@@ -12,14 +12,14 @@
 </div>
 
 
-
-
-    {% for obj in object_list %}
+    {% for post in object_list %}
 
         <div class="jumbotron bg-white">
           <h1 class="display-6">Post</h1>
-          <p class="lead">{{ obj.title }}</p>
-          <hr class="my-5">{{ obj.content }}
+          <p class="lead">{{ post.title }} by
+            <a href="{% url 'users:profile' username=post.posted_by %}">@{{ post.posted_by }}</a>
+          </p>
+          <hr class="my-5">{{ post.content }}
           <p class="lead">
             <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
           </p>

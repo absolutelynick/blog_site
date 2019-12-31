@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
+from django.views.generic.detail import DetailView
+
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -9,7 +11,7 @@ from django.conf import settings
 from django.contrib import messages
 
 from .forms import UserCreateForm, UserEditForm
-
+from .models import User
 
 class ProfileView(LoginRequiredMixin, TemplateView):
     """Profile Page"""
@@ -17,8 +19,15 @@ class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = "users/profile.html"
 
     def get(self, request, *args, **kwargs):
-        user = request.user
-        context = {"title": f"{user.full_name}"}
+        if kwargs.get("username", None):
+            user = get_object_or_404(User, username=kwargs['username'])
+        else:
+            user = request.user
+
+        context = {
+            "title": f"{user.full_name}",
+            "user_profile": user,
+        }
         return render(request, self.template_name, context=context)
 
 
@@ -85,13 +94,16 @@ def save_edit(request):
             messages.success(request, "Profile updated successfully.")
 
         else:
-            messages.error(request, "Error updating your profile. Please fix the issues to save your changes.")
+            messages.error(
+                request,
+                "Error updating your profile. Please fix the issues to save your changes.",
+            )
     else:
         form = UserEditForm(instance=request.user)
 
-    return render(request,
-                  "users/profile_edit.html",
-                  {"title": "Edit Profile", "form": form})
+    return render(
+        request, "users/profile_edit.html", {"title": "Edit Profile", "form": form}
+    )
 
 
 class ThanksPage(TemplateView):
@@ -145,7 +157,8 @@ class PasswordChangeView(auth_views.PasswordChangeView):
     """Change user password"""
 
     template_name = "users/password_change_form.html"
-    success_url = reverse_lazy("users:profile")
+    # success_url = reverse_lazy("users:profile", kwargs={'username': '{user.username}'})
+    success_url = reverse_lazy("users:profile",)
 
     def get_context_data(self, **kwargs):
         context = super(PasswordChangeView, self).get_context_data(**kwargs)

@@ -17,7 +17,7 @@ class BlogPost(models.Model):
         models.TextField(blank=True, null=False), blank=True, null=True
     )
     posted_by = models.ForeignKey(
-        USERS_MODEL, null=True, related_name="owner", on_delete=models.SET_NULL
+        USERS_MODEL, null=True, related_name="author", on_delete=models.SET_NULL
     )
 
     date_created = models.DateTimeField(auto_now_add=True)

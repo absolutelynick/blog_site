@@ -48,9 +48,7 @@ class UserEditForm(forms.ModelForm):
 
     date_of_birth = forms.DateField(
         label="Date of Birth",
-        widget=forms.widgets.DateInput(
-            format=("%d/%m/%Y"), attrs={"class": "datepicker"}
-        ),
+        widget=DateInput(),
     )
 
     about = forms.CharField(

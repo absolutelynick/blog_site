@@ -6,10 +6,11 @@
 
 {% block content %}
 
-<p class="text-center">Welcome to your profile. You can
-    <a href="{% url "users:profile_edit" %}">edit your profile</a> <b>or</b>
-<a href="{% url "users:change_password" %}">change your password</a>.</p>
-
+{% if user_profile.username == user.username %}
+    <p class="text-center">Welcome to your profile. You can
+        <a href="{% url "users:profile_edit" %}">edit your profile</a> <b>or</b>
+    <a href="{% url "users:change_password" %}">change your password</a>.</p>
+{% endif %}
 
   <div class="row" style="margin-top:30px;">
 
@@ -22,13 +23,14 @@
                 <img src="https://cdn.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png"
                    width="130" height="130" class="mx-auto d-block" alt="Blog" style="border-radius: 100%;">
 
-                <h1 class="display-5 text-center">Edit Profile</h1>
+                <h1 class="display-5 text-center">Profile</h1>
+                <h3 class="text-center">{{user_profile.username}}</h3>
 
                 <div class="text-center" >You can edit your profile using the following form<div><br>
 
                 <div class="container">
 
-                    {% for field, value in user.fields.items %}
+                    {% for field, value in user_profile.fields.items %}
 
                         {% if field == "Website" %}
                             <b><br><a href="{{ value }}">Your Webite</a></br>

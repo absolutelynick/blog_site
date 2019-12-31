@@ -49,10 +49,6 @@ class ProfileEditView(LoginRequiredMixin, TemplateView):
         else:
             form = UserEditForm(instance=request.user)
 
-            # Profile Picture
-
-            profile_pic = user.get_profile_picture_path()
-
             # Profile fields
 
             form.fields["first_name"].initial = request.user.first_name

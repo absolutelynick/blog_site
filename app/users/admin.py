@@ -6,11 +6,11 @@ from .models import User
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
-    ordering = ["last_name", "first_name"]
+    ordering = ["last_name", "first_name", "username"]
     list_display = [
+        "username",
         "first_name",
         "last_name",
-        "username",
         "gender",
         "email",
         "uuid",

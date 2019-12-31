@@ -1,0 +1,1 @@
+{"virtualbox":{"/app":{"owner":"blog","group":"blog","guestpath":"/app","hostpath":"/Users/nick.hughes/git/blog/blog_site/app","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"/Users/nick.hughes/git/blog/blog_site","disabled":false,"__vagrantfile":true}}}

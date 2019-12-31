@@ -109,7 +109,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.get_profile_picture_path()
 
     def get_profile_picture_path(self, file_type=None, raises=False):
-        if (self.picture is None) or (os.path.exists(self.picture_file_path) == False):
+        if (self.picture is None) or (self.picture_file_path == None) or (self.picture_file_type == None):
             return os.path.join(settings.MEDIA_ROOT, "users/placeholder.png")
 
         return os.path.join(

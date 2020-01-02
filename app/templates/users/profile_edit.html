@@ -23,7 +23,8 @@
 
                 <div class="container">
 
-                <form method="POST" action="{% url 'users:save_edit' %}" enctype="multipart/form-data">{% csrf_token %}
+                <form method="POST" action="{% url 'users:save_edit' %}"
+                      enctype="multipart/form-data">{% csrf_token %}
 
                     <div class="form-group">
 
@@ -44,7 +45,20 @@
                         {% bootstrap_field form.website layout='inline' error_types='all' %}
                         {% bootstrap_field form.country layout='inline' error_types='all' %}
 
-                        {% bootstrap_field form.picture layout='inline' error_types='all' %}
+                        <div class="custom-file form-group" style="margin-bottom: 15px;">
+                            <input  type="file" class="custom-file-input"
+                                    name="picture" accept="image/*" id="id_picture">
+                            <label class="custom-file-label" for="id_picture">Choose profile picture...</label>
+                            <div class="invalid-feedback">Example invalid custom file feedback</div>
+                        </div>
+                        <script>
+                            $('#id_picture').on('change',function(){
+                                //get the file name
+                                var fileName = $(this).val().replace('C:\\fakepath\\', " ");
+                                //replace the "Choose a file" label
+                                $(this).next('.custom-file-label').html(fileName);
+                            })
+                        </script>
 
                         <div class="align-self-center">
                             <button type="submit" value="Save changes" class="btn btn-primary form-control">Save</button>

@@ -5,11 +5,10 @@ from django.contrib.auth.models import (
 )
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
-from django.conf import settings
 
 from api.constants.country_codes import COUNTRIES_ORDERED_DICT
 
-import uuid, os, shutil
+import uuid
 from datetime import datetime
 
 

@@ -144,13 +144,13 @@ AUTHENTICATION_BACKENDS = [
     "social_core.backends.facebook.FacebookOAuth2",
     "social_core.backends.twitter.TwitterOAuth",
     "social_core.backends.google.GoogleOAuth2",
-
     # Default django login
-    'django.contrib.auth.backends.ModelBackend'
+    "django.contrib.auth.backends.ModelBackend",
 ]
 
 if DEBUG:
     from .environment_variables import set_environment_variables
+
     set_environment_variables()
 
 # https://apps.twitter.com/app/new
@@ -163,11 +163,13 @@ SOCIAL_AUTH_FACEBOOK_SECRET = os.environ.get("SOCIAL_AUTH_FACEBOOK_SECRET", None
 
 # https://console.developers.google.com/apis/credentials
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY", None)
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET", None)
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get(
+    "SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET", None
+)
 
 
-SOCIAL_AUTH_USER_FIELDS = ['email', 'username']
-SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+SOCIAL_AUTH_USER_FIELDS = ["email", "username"]
+SOCIAL_AUTH_FACEBOOK_SCOPE = ["email"]
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/

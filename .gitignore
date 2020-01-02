@@ -64,6 +64,7 @@ db.sqlite3
 
 # pyenv
 .python-version
+environment_variables.py
 
 # celery beat schedule file
 celerybeat-schedule

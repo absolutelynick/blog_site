@@ -24,9 +24,13 @@ SECRET_KEY = os.environ.get(
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DJANGO_DEBUG", "true") == "true"
 
-ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1"] if DEBUG else ["pythonanywhere.com"]
+ALLOWED_HOSTS = (
+    ["0.0.0.0", "127.0.0.1", "localhost", "dev.blogsite.com"]
+    if DEBUG
+    else ["pythonanywhere.com"]
+)
 
 # Sentry Errors
 
@@ -50,6 +54,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework.authtoken",
+    "social_django",
     "rest_framework",
     "bootstrap4",
     "core",
@@ -132,6 +137,37 @@ AUTH_PASSWORD_VALIDATORS = [
         "OPTIONS": {"min_digits": 2},
     },
 ]
+
+# Authenticating users from outside apps and services
+
+AUTHENTICATION_BACKENDS = [
+    "social_core.backends.facebook.FacebookOAuth2",
+    "social_core.backends.twitter.TwitterOAuth",
+    "social_core.backends.google.GoogleOAuth2",
+
+    # Default django login
+    'django.contrib.auth.backends.ModelBackend'
+]
+
+if DEBUG:
+    from .environment_variables import set_environment_variables
+    set_environment_variables()
+
+# https://apps.twitter.com/app/new
+SOCIAL_AUTH_TWITTER_KEY = os.environ.get("SOCIAL_AUTH_TWITTER_KEY", None)
+SOCIAL_AUTH_TWITTER_SECRET = os.environ.get("SOCIAL_AUTH_TWITTER_SECRET", None)
+
+# https://developers.facebook.com/
+SOCIAL_AUTH_FACEBOOK_KEY = os.environ.get("SOCIAL_AUTH_FACEBOOK_KEY", None)
+SOCIAL_AUTH_FACEBOOK_SECRET = os.environ.get("SOCIAL_AUTH_FACEBOOK_SECRET", None)
+
+# https://console.developers.google.com/apis/credentials
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY", None)
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET", None)
+
+
+SOCIAL_AUTH_USER_FIELDS = ['email', 'username']
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/

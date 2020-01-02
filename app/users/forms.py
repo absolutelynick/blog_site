@@ -10,8 +10,8 @@ YEAR = datetime.datetime.now().year + 1
 
 
 class UserCreateForm(UserCreationForm):
-    first_name = forms.CharField()
-    last_name = forms.CharField()
+    first_name = forms.CharField(required=True)
+    last_name = forms.CharField(required=True)
     username = forms.CharField()
     email = forms.EmailField()
     password1 = forms.CharField(

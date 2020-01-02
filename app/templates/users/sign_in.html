@@ -26,17 +26,55 @@
 
                         {% bootstrap_form form show_label=False %}
 
-                        <div class="align-self-center">
-                            <button type="submit" class="btn btn-primary form-control">Send</button>
-                        </div>
+                        <button type="submit" class="btn btn-primary form-control"
+                        style="margin-bottom: 15px;">Send</button>
+
+                        <a class="btn btn-secondary form-control"
+                           href="{% url "social:begin" "facebook" %}"
+                           style="margin-bottom: 15px;">
+                            <img src="https://webstockreview.net/images/white-facebook-icon-png-14.png"
+                                width="25" height="25" alt="Twitter" class="rounded float-left"
+                                style="-webkit-filter: invert(1); filter: invert(1);">
+                            Sign in with Facebook
+                        </a>
+
+                        <a class="btn btn-secondary form-control"
+                           href="{% url "social:begin" "twitter" %}"
+                           style="margin-bottom: 15px;">
+                            <img src="https://webstockreview.net/images/black-twitter-icon-png-11.png"
+                                width="25" height="25" alt="Twitter" class="rounded float-left"
+                                style="-webkit-filter: invert(1); filter: invert(1);">
+                            Sign in with Twitter
+                        </a>
+
+                        <a class="btn btn-secondary form-control"
+                           href="{% url "social:begin" "google-oauth2" %}"
+                           style="margin-bottom: 15px;">
+                            <img src="https://image.flaticon.com/icons/png/512/60/60818.png"
+                                width="25" height="25" alt="Twitter" class="rounded float-left"
+                                style="-webkit-filter: invert(1); filter: invert(1);">
+                            Sign in with Google
+                        </a>
+
                     </div>
 
                 </form>
 
                 </div>
 
-                    <p class="font-weight-light text-center" style="margin-bottom:-40px;">Forgotten your password?
-                        <a class="" href="{% url 'users:sign_up' %}">Sign up here!</a></p>
+                    <a href="{% url 'users:sign_up' %}"
+                         class="btn btn-light form-control">Need an account?
+                        <strong>
+                            Sign up here
+                        </strong>
+                    </a>
+
+                    <a href="{% url 'users:reset_password' %}"
+                         class="btn btn-light form-control">Forgotten your password?
+                        <strong>
+                            Reset here
+                        </strong>
+                    </a>
 
                 </div>
 

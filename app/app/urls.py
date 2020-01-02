@@ -23,6 +23,7 @@ urlpatterns = [
     path("", include("core.urls")),
     path("users/", include("users.urls")),
     path("blog/", include("blog.urls")),
+    path("social-auth/", include("social_django.urls", namespace="social")),
 ]
 
 # Adding local media handling

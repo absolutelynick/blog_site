@@ -1,12 +1,21 @@
 {% extends "base.html" %}
 
-{% block head_title %}Blog Post{% endblock %}
+{% block head_title %}{{ title }}{% endblock %}
 
 {% block content %}
 
-    Welcome to the blog
-
-    <h1>{{ object.title }}</h1>
-    <p>{{ object.content }}</p>
+<div class="jumbotron bg-white">
+  <h1 class="display-6">Post</h1>
+  <p class="lead">{{ post.title }} by
+    <a href="{% url 'users:profile' username=post.posted_by %}">@{{ post.posted_by }}</a>
+  </p>
+  <hr class="my-5">{{ post.content }}
+  <p class="lead">
+      {{ post.date_created }}
+      {% if post.liked_by|length %}
+        <br>Liked by: {{ post.liked_by|length }} people
+      {% endif %}
+  </p>
+</div>
 
 {% endblock %}

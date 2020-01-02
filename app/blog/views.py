@@ -1,5 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.conf import settings
+from django.views.generic import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 from .models import BlogPost
 from .forms import BlogPostModelForm
 
@@ -8,7 +11,7 @@ def blog_post_list_view(request):
     # This could be a list or search view
     posts = BlogPost.objects.all()
     template_name = "blog/posts.html"
-    context = {"object_list": posts, "title": "Blog"}
+    context = {"blog_posts": posts, "title": "Blog"}
     return render(request, template_name, context)
 
 
@@ -26,12 +29,23 @@ def blog_post_create_view(request):
     return render(request, template_name, context)
 
 
-def blog_post_detail_view(request, slug):
-    # An object --> detail view
-    obj = get_object_or_404(BlogPost, slug=slug)
+class PostView(LoginRequiredMixin, TemplateView):
+    """Post view Page"""
+
     template_name = "blog/detail.html"
-    context = {"object": obj}
-    return render(request, template_name, context)
+
+    def get(self, request, *args, **kwargs):
+        post = get_object_or_404(BlogPost, slug=kwargs["slug"])
+        context = {"title": f"{post.slug}", "post": post}
+        return render(request, self.template_name, context=context)
+
+
+# def blog_post_detail_view(request, slug):
+#     # An object --> detail view
+#     obj = get_object_or_404(BlogPost, slug=kwargs["username"])
+#     template_name = "blog/detail.html"
+#     context = {"object": obj}
+#     return render(request, template_name, context)
 
 
 def blog_post_update_view(request, slug):

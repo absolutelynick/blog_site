@@ -1,7 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
-from django.views.generic.detail import DetailView
 
 from django.urls import reverse_lazy
 from django.views.generic import CreateView

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load simple_tags %}
 
 {% block head_title %}Blog List{% endblock %}
 
@@ -12,20 +13,28 @@
 </div>
 
 
-    {% for post in object_list %}
 
-        <div class="jumbotron bg-white">
-          <h1 class="display-6">Post</h1>
-          <p class="lead">{{ post.title }} by
-            <a href="{% url 'users:profile' username=post.posted_by %}">@{{ post.posted_by }}</a>
-          </p>
-          <hr class="my-5">{{ post.content }}
-          <p class="lead">
-            <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
-          </p>
+<div class="container text-center">
+
+    {% for posts in blog_posts|chunks_of:3 %}
+        <div class="row">
+            {% for post in posts %}
+                <a class="col-sm btn btn-light form-control"
+                   href="{% url 'blog:post' post.slug %}"
+                   style="border: solid 1px lightgrey; margin: 5px 5px 5px 5px; height: 100%;">
+                    <h6 class="mt-0">{{ post.title }}</h6>
+                    {{ post.content|truncatechars:20  }}
+                    <br><strong><small>Posted by @{{ post.posted_by }}</small></strong>
+                </a>
+            {% endfor %}
         </div>
-
     {% endfor %}
+
+</div>
+
+
+
+
 
     {# TODO https://getbootstrap.com/docs/4.3/components/card/   #}
 

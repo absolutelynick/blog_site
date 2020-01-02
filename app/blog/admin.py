@@ -17,7 +17,7 @@ class BlogAdmin(admin.ModelAdmin):
         "date_modified",
     ]
     fieldsets = (
-        (_("Blog Info"), {"fields": ("title", "content")}),
+        (_("Blog Info"), {"fields": ("title", "content", "slug")}),
         (_("Blog Creator Info"), {"fields": ("posted_by",)}),
         (_("Base Info"), {"fields": ("liked_by", "uuid", "hashtags")}),
     )

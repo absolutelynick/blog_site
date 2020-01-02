@@ -37,6 +37,12 @@ class UserManager(BaseUserManager):
         return user
 
 
+def upload_image_to(user, image_name):
+    ext = image_name.split(".")[-1]
+    save_name = f"{user.uuid}.{ext}"
+    return f"user_images/{save_name}"
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     """Custom user model that supports using email instead of username"""
 
@@ -82,7 +88,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     picture_updated = models.DateTimeField(null=True)
     picture_file_path = models.CharField(max_length=128, null=True)
     picture_file_type = models.CharField(max_length=5, null=True)
-    picture = models.ImageField(upload_to=picture_file_path, blank=True)
+    picture = models.ImageField(upload_to=upload_image_to, blank=True)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -105,42 +111,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     def full_name(self):
         return f"{self.first_name} {self.last_name}"
 
-    def profile_picture_path(self):
-        return self.get_profile_picture_path()
-
-    def get_profile_picture_path(self, file_type=None, raises=False):
-        if (self.picture is None) or (self.picture_file_path == None) or (self.picture_file_type == None):
-            return os.path.join(settings.MEDIA_ROOT, "users/placeholder.png")
-
-        return os.path.join(
-            settings.USER_PICTURE_DIR,
-            f"{str(self.uuid)}.{file_type or self.picture_file_type}",
-        )
-
     @property
     def has_picture(self):
         return self.picture_file_type is not None
 
     def save_profile_pic(self, picture_file):
         file_type = picture_file.split(".")[-1]
-        file_location = self.get_profile_picture_path(file_type)
-
-        if settings.DEBUG:
-            print(f"save_profile_pic: picture_file: {picture_file}")
-            print(f"save_profile_pic: file_location: {file_location}")
-
-        folder_location = os.path.dirname(file_location)
-        if not os.path.exists(folder_location):
-            os.makedirs(folder_location)
-
-        with open(file_location, "wb") as f:
-            shutil.copyfileobj(open(picture_file, "rb"), f)
 
         self.picture_updated = datetime.utcnow()
         self.picture_file_type = file_type
-        self.picture_file_path = file_location
-        self.picture = file_location
-
         self.save()
 
     def save(self, *args, **kwargs):

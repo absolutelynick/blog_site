@@ -18,10 +18,7 @@ class BlogAdmin(admin.ModelAdmin):
     ]
     fieldsets = (
         (_("Blog Info"), {"fields": ("title", "content")}),
-        (
-            _("Blog Creator Info"),
-            {"fields": ("posted_by",)},
-        ),
+        (_("Blog Creator Info"), {"fields": ("posted_by",)}),
         (_("Base Info"), {"fields": ("liked_by", "uuid", "hashtags")}),
     )
     ordering = ["title", "date_created", "date_modified"]

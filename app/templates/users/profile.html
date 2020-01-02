@@ -20,11 +20,17 @@
 
             <div class="jumbotron jumbotron-fluid bg-white" style="padding-top: 30px">
 
-                <img src="https://cdn.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png"
-                   width="130" height="130" class="mx-auto d-block" alt="Blog" style="border-radius: 100%;">
+                {% if user_profile.picture %}
+                        <img src="{{ user_profile.picture.url }}"
+                       width="130" height="130" class="mx-auto d-block" alt="Profile Picture" style="border-radius: 100%;">
+                    {% else %}
+                        <img src="/media/users/placeholder.png" width="130" height="130" class="mx-auto d-block"
+                             alt="Placer Holder Image" style="border-radius: 100%;">
+
+                    {% endif %}
 
                 <h1 class="display-5 text-center">Profile</h1>
-                <h3 class="text-center">{{user_profile.username}}</h3>
+                <h3 class="text-center">@{{user_profile.username}}</h3>
 
                 <div class="text-center" >You can edit your profile using the following form<div><br>
 

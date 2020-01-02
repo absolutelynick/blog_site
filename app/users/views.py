@@ -7,11 +7,11 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
-from django.conf import settings
 from django.contrib import messages
 
 from .forms import UserCreateForm, UserEditForm
 from .models import User
+
 
 class ProfileView(LoginRequiredMixin, TemplateView):
     """Profile Page"""
@@ -20,14 +20,11 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
     def get(self, request, *args, **kwargs):
         if kwargs.get("username", None):
-            user = get_object_or_404(User, username=kwargs['username'])
+            user = get_object_or_404(User, username=kwargs["username"])
         else:
             user = request.user
 
-        context = {
-            "title": f"{user.full_name}",
-            "user_profile": user,
-        }
+        context = {"title": f"{user.full_name}", "user_profile": user}
         return render(request, self.template_name, context=context)
 
 
@@ -77,16 +74,7 @@ def save_edit(request):
         )
 
         if form.is_valid():
-
-            if settings.DEBUG:
-                print("request.FILES: ", request.FILES)
-                print("request.POST: ", request.POST)
-
-            if request.POST["picture"]:
-                request.user.save_profile_pic(request.POST["picture"])
-
             form.save()
-
             messages.success(request, "Profile updated successfully.")
 
         else:
@@ -154,7 +142,7 @@ class PasswordChangeView(auth_views.PasswordChangeView):
 
     template_name = "users/password_change_form.html"
     # success_url = reverse_lazy("users:profile", kwargs={'username': '{user.username}'})
-    success_url = reverse_lazy("users:profile",)
+    success_url = reverse_lazy("users:profile")
 
     def get_context_data(self, **kwargs):
         context = super(PasswordChangeView, self).get_context_data(**kwargs)

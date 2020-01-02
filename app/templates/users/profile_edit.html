@@ -23,7 +23,7 @@
 
                 <div class="container">
 
-                <form method="POST" action="{% url 'users:save_edit' %}">{% csrf_token %}
+                <form method="POST" action="{% url 'users:save_edit' %}" enctype="multipart/form-data">{% csrf_token %}
 
                     <div class="form-group">
 

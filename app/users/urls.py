@@ -1,7 +1,5 @@
 from django.urls import path
 from django.contrib.auth.views import LoginView as SignInView, LogoutView as SignOutView
-from django.conf import settings
-from django.conf.urls.static import static
 
 from .views import (
     ThanksPage,
@@ -15,6 +13,7 @@ from .views import (
     PasswordResetCompleteView,
     save_edit,
 )
+
 
 app_name = "users"
 
@@ -52,6 +51,3 @@ urlpatterns = [
         name="password_reset_complete",
     ),
 ]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

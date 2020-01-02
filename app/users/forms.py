@@ -42,14 +42,11 @@ class DateInput(forms.DateInput):
 class UserEditForm(forms.ModelForm):
     first_name = forms.CharField()
     last_name = forms.CharField()
-    username = forms.CharField()
+    username = forms.CharField(required=True)
 
-    email = forms.EmailField()
+    email = forms.EmailField(required=True)
 
-    date_of_birth = forms.DateField(
-        label="Date of Birth",
-        widget=DateInput(),
-    )
+    date_of_birth = forms.DateField(label="Date of Birth", widget=DateInput())
 
     about = forms.CharField(
         max_length=255,

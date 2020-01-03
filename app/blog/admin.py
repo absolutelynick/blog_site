@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import gettext as _
 
-from .models import BlogPost
+from .models import BlogPost, Comment
 
 
 @admin.register(BlogPost)
@@ -23,3 +23,20 @@ class BlogAdmin(admin.ModelAdmin):
     )
     ordering = ["title", "date_created", "date_modified"]
     readonly_fields = ("uuid", "date_created")
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ["post", "comment", "date_created", "date_modified"]
+    list_filter = ("comment", "date_created", "date_modified")
+    search_fields = [
+        "post",
+        "comment",
+        "date_created",
+        "date_modified",
+        "date_created",
+        "date_modified",
+    ]
+
+    ordering = ["comment", "date_created", "date_modified"]
+    readonly_fields = ("date_created", "date_modified", "uuid")

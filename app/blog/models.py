@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField
 
 import uuid
+from datetime import datetime
 
 USERS_MODEL = "users.User"
 
@@ -33,3 +34,35 @@ class BlogPost(models.Model):
     class Meta(object):
         ordering = ["title"]
         unique_together = ("title", "posted_by")
+
+
+class Comment(models.Model):
+    post = models.ForeignKey(
+        BlogPost, null=True, related_name="BlogPost", on_delete=models.SET_NULL
+    )
+    comment = models.TextField(max_length=256, null=True, blank=True)
+    comment_by = models.ForeignKey(
+        USERS_MODEL, null=True, related_name="user", on_delete=models.SET_NULL
+    )
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+
+    @property
+    def username(self):
+        return self.comment_by.username
+
+    @property
+    def email(self):
+        return self.comment_by.email
+
+    class Meta:
+        ordering = ("date_created",)
+
+    def __str__(self):
+        return f"Comment by '{self.comment_by.username}' on '{self.post}'"
+
+    def save(self, *args, **kwargs):
+        self.date_modified = datetime.utcnow()
+        super(Comment, self).save(*args, **kwargs)

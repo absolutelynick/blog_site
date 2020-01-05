@@ -1,35 +1,62 @@
 from django.shortcuts import render, get_object_or_404
-from django.conf import settings
+from django.shortcuts import redirect
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 
 from .models import BlogPost
-from .forms import BlogPostModelForm
+from .forms import PostForm  # , CommentForm
+from api.utils.page_tools import get_pagination_page
 
 
-def blog_post_list_view(request):
-    # This could be a list or search view
-    posts = BlogPost.objects.all()
+class BlogListView(LoginRequiredMixin, TemplateView):
+    """Blog Post List Page"""
+
     template_name = "blog/posts.html"
-    context = {"blog_posts": posts, "title": "Blog"}
-    return render(request, template_name, context)
+
+    def get(self, request, *args, **kwargs):
+        object_list = BlogPost.objects.all()
+        page, posts = get_pagination_page(request, object_list)
+        context = {"title": "Posts", "posts": posts, "page": page}
+        return render(request, self.template_name, context=context)
 
 
-def blog_post_create_view(request):
-    # Create objects or use a form
-    form = BlogPostModelForm(request.POST or None)
-    if form.is_valid():
-        if settings.DEBUG:
-            print(form.cleaned_data)
-        form.save()
-        form = BlogPostModelForm()
+class BlogPostCreateView(LoginRequiredMixin, TemplateView):
+    """Blog Post Create Page"""
 
     template_name = "blog/create.html"
-    context = {"form": form, "title": "Create Post"}
-    return render(request, template_name, context)
+
+    def get(self, request, *args, **kwargs):
+        form = form = PostForm()
+        context = {"title": "Create Post", "form": form}
+        return render(request, self.template_name, context=context)
+
+    def post(self, request):
+        if request.method == "POST":
+            form = PostForm(request.POST)
+            if form.is_valid():
+                post = form.save(commit=False)
+                title = form.cleaned_data["title"]
+                content = form.cleaned_data["content"]
+                post.title = title
+                post.content = content
+                post.posted_by = request.user
+                post.slug = title.replace(" ", "-")
+                hastags = [i for i in content.split(" ") if "#" in i]
+                post.hashtags = hastags
+                post.save()
+
+                messages.success(request, "Post saved.")
+
+            else:
+                messages.error(request, "Error posting.")
+        else:
+            form = PostForm()
+        context = {"title": "Create Post", "form": form}
+        return render(request, self.template_name, context=context)
 
 
-class PostView(LoginRequiredMixin, TemplateView):
+class BlogPostView(LoginRequiredMixin, TemplateView):
     """Post view Page"""
 
     template_name = "blog/detail.html"
@@ -40,24 +67,29 @@ class PostView(LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, context=context)
 
 
-# def blog_post_detail_view(request, slug):
-#     # An object --> detail view
-#     obj = get_object_or_404(BlogPost, slug=kwargs["username"])
-#     template_name = "blog/detail.html"
-#     context = {"object": obj}
-#     return render(request, template_name, context)
+class BlogPostEditView(LoginRequiredMixin, TemplateView):
+    """Post Edit View"""
 
-
-def blog_post_update_view(request, slug):
-    # Append or update the data that we are working with
-    obj = get_object_or_404(BlogPost, slug=slug)
     template_name = "blog/update.html"
-    context = {"object": obj, "form": None}
-    return render(request, template_name, context)
+
+    def get(self, request, *args, **kwargs):
+        obj = get_object_or_404(BlogPost, slug=kwargs["slug"])
+        context = {"object": obj}
+        return render(request, self.template_name, context=context)
 
 
-def blog_post_delete_view(request, slug):
-    obj = get_object_or_404(BlogPost, slug=slug)
+class BlogPostDeleteView(LoginRequiredMixin, TemplateView):
+    """Post Delete View"""
+
     template_name = "blog/delete.html"
-    context = {"object": obj}
-    return render(request, template_name, context)
+
+    def get(self, request, *args, **kwargs):
+        obj = get_object_or_404(BlogPost, slug=kwargs["slug"])
+        context = {"object": obj}
+        if obj:
+            obj.delete()
+        else:
+            # Fail
+            pass
+
+        return render(request, self.template_name, context=context)

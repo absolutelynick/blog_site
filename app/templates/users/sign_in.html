@@ -27,7 +27,7 @@
                         {% bootstrap_form form show_label=False %}
 
                         <button type="submit" class="btn btn-primary form-control"
-                        style="margin-bottom: 15px;">Send</button>
+                        style="margin-bottom: 15px;">Sign in</button>
 
                         <a class="btn btn-secondary form-control"
                            href="{% url "social:begin" "facebook" %}"
@@ -63,6 +63,7 @@
                 </div>
 
                     <a href="{% url 'users:sign_up' %}"
+                       style="margin-bottom: 15px"
                          class="btn btn-light form-control">Need an account?
                         <strong>
                             Sign up here

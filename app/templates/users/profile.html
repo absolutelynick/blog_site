@@ -12,7 +12,7 @@
     <a href="{% url "users:change_password" %}">change your password</a>.</p>
 {% endif %}
 
-  <div class="row" style="margin-top:30px;">
+  <div class="row" style="margin-top: 30px;">
 
       <div class="col-6 mx-auto">
 
@@ -22,10 +22,13 @@
 
                 {% if user_profile.picture %}
                         <img src="{{ user_profile.picture.url }}"
-                       width="130" height="130" class="mx-auto d-block" alt="Profile Picture" style="border-radius: 100%;">
+                             width="130" height="130" class="mx-auto d-block" alt="Profile Picture"
+                             style="border-radius: 100%; border: solid 1px black;">
                     {% else %}
-                        <img src="/media/user_images/placeholder.png" width="130" height="130" class="mx-auto d-block"
-                             alt="Placer Holder Image" style="border-radius: 100%;">
+                        <img src="/media/user_images/placeholder.png" width="130" height="130"
+                             class="mx-auto d-block"
+                             alt="Placer Holder Image"
+                             style="border-radius: 100%; border: solid 1px black;">
 
                     {% endif %}
 
@@ -38,8 +41,14 @@
 
                     {% for field, value in user_profile.fields.items %}
 
-                        {% if field == "Website" %}
-                            <b><br><a href="{{ value }}">Your Webite</a></br>
+                        {% if field == "Website" and value != None %}
+                            <b><br><a href="{{ value }}">
+                                {% if user_profile.username == user.username %}
+                                    Your Webite
+                                {% else %}
+                                    Website
+                                {% endif %}
+                        </a></br>
                         {% else %}
                               <div class="row"><div class="col text-right">
                                   <b>{{ field }}:</b>
@@ -59,8 +68,10 @@
 
   </div>
 
+          {% include "pagination.html" with page=posts %}
 
 </div>
+
 
 
 {% endblock %}

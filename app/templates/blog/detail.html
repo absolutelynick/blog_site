@@ -1,21 +1,42 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block head_title %}{{ title }}{% endblock %}
 
 {% block content %}
+<div class="row" style="margin-top:30px;">
 
-<div class="jumbotron bg-white">
-  <h1 class="display-6">Post</h1>
+  <div class="col-6 mx-auto">
+
+    <div class="container" style="border: 1px solid lightgrey">
+
+        <div class="jumbotron jumbotron-fluid bg-white" style="padding-top: 30px">
+
+            <img src="{% static "images/icons/blog.png"%}"
+               width="70" height="70" class="mx-auto d-block" alt="Blog">
+
+            <h1 class="display-5 text-center">Post</h1>
+
+            <div class="container">
+
+
   <p class="lead">{{ post.title }} by
     <a href="{% url 'users:profile' username=post.posted_by %}">@{{ post.posted_by }}</a>
   </p>
   <hr class="my-5">{{ post.content }}
   <p class="lead">
-      {{ post.date_created }}
-      {% if post.liked_by|length %}
+        <p>
+          {{ post.date_created }}
+          {% if post.liked_by|length %}
         <br>Liked by: {{ post.liked_by|length }} people
       {% endif %}
   </p>
+
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
 
 {% endblock %}

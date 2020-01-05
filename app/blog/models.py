@@ -35,6 +35,10 @@ class BlogPost(models.Model):
         ordering = ["title"]
         unique_together = ("title", "posted_by")
 
+    def save(self, *args, **kwargs):
+        self.date_modified = datetime.utcnow()
+        super(BlogPost, self).save(*args, **kwargs)
+
 
 class Comment(models.Model):
     post = models.ForeignKey(

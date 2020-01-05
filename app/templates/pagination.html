@@ -1,14 +1,8 @@
-{% extends "base.html" %}
+{% load simple_tags %}
 
-{% block head_title %}Delete{% endblock %}
+<div class="container text-center">
 
-{% block content %}
-
-    <h1>Delete Posts</h1>
-
-    <div class="container text-center">
-
-    {% for posts in blog_posts|chunks_of:3 %}
+    {% for posts in posts|chunks_of:3 %}
         <div class="row">
             {% for post in posts %}
                 <a class="col-sm btn btn-light form-control"
@@ -24,5 +18,15 @@
 
 </div>
 
-
-{% endblock %}
+<div class="container-fluid text-center"
+        width="100%" style="margin: 15px 0 15px 0;">
+    {% if page.has_previous %}
+        <a href="?page={{ page.previous_page_number }}">Last page </a>
+    {% endif %}
+        <span class="current">
+            Page {{ page.number }} of {{ page.paginator.num_pages }}
+        </span>
+      {% if page.has_next %}
+            <a href="?page={{ page.next_page_number }}"> Next page</a>
+      {% endif %}
+</div>

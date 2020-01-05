@@ -10,6 +10,8 @@ from django.contrib import messages
 
 from .forms import UserCreateForm, UserEditForm
 from .models import User
+from blog.models import BlogPost
+from api.utils.page_tools import get_pagination_page
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):
@@ -18,12 +20,22 @@ class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = "users/profile.html"
 
     def get(self, request, *args, **kwargs):
+        # Get the user
         if kwargs.get("username", None):
             user = get_object_or_404(User, username=kwargs["username"])
         else:
             user = request.user
 
-        context = {"title": f"{user.full_name}", "user_profile": user}
+        # Get the users posts
+        object_list = BlogPost.objects.filter(posted_by=user)
+        page, posts = get_pagination_page(request, object_list)
+
+        context = {
+            "title": f"{user.full_name}",
+            "posts": posts,
+            "page": page,
+            "user_profile": user,
+        }
         return render(request, self.template_name, context=context)
 
 

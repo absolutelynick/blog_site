@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
+from django.utils.text import slugify
 
 import uuid
 from datetime import datetime
@@ -37,6 +38,8 @@ class BlogPost(models.Model):
 
     def save(self, *args, **kwargs):
         self.date_modified = datetime.utcnow()
+        self.slug = slugify(self.title)
+
         super(BlogPost, self).save(*args, **kwargs)
 
 

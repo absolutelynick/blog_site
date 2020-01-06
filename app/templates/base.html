@@ -46,7 +46,7 @@
                                         title="View Blogs">
                         </a>
 
-                        <a class="nav-link" href="{% url 'users:profile' user.username %}">
+                        <a class="nav-link" href="{% url 'users:profile' slug=user.slug %}">
                             <img src="{% static "images/icons/user.png"%}"
                                 width="35" height="35" alt="Sign In"
                                 title="View your Profile">
@@ -103,7 +103,7 @@
             {% for message in messages %}
                 {% if message.tags == "success" %}
                     <div class="container alert alert-success text-center" role="alert">
-                        {{ message|safe }} <a href="{% url 'users:profile' user.username%}" class="alert-link">Click
+                        {{ message|safe }} <a href="{% url 'users:profile' slug=user.slug%}" class="alert-link">Click
                     to go to your profile</a>.
                 {% else %}
                     <div class="container alert alert-danger text-center" role="alert">

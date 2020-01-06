@@ -29,7 +29,7 @@ urlpatterns = [
         name="sign_out",
     ),
     path("sign_up/", CreateUserView.as_view(), name="sign_up"),
-    path("profile/<str:username>/", ProfileView.as_view(), name="profile"),
+    path("profile/<str:slug>/", ProfileView.as_view(), name="profile"),
     path("profile_edit/", ProfileEditView.as_view(), name="profile_edit"),
     path("profile_save/", save_edit, name="save_edit"),
     path("thank_you/", ThanksPage.as_view(), name="thank_you"),

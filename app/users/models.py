@@ -4,6 +4,7 @@ from django.contrib.auth.models import (
     BaseUserManager,
 )
 from django.contrib.postgres.fields import ArrayField
+from django.utils.text import slugify
 from django.db import models
 
 from api.constants.country_codes import COUNTRIES_ORDERED_DICT
@@ -92,6 +93,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_email_verified = models.BooleanField(default=False)
+    slug = models.SlugField(max_length=64, null=True, unique=True)
 
     follows = models.ManyToManyField("self", related_name="follows", blank=True)
     followers = models.ManyToManyField("self", related_name="followers", blank=True)
@@ -123,6 +125,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def save(self, *args, **kwargs):
         self.date_modified = datetime.utcnow()
+        self.slug = slugify(self.username)
         super(User, self).save(*args, **kwargs)
 
     @property

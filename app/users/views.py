@@ -21,8 +21,8 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
     def get(self, request, *args, **kwargs):
         # Get the user
-        if kwargs.get("username", None):
-            user = get_object_or_404(User, username=kwargs["username"])
+        if kwargs.get("slug", None):
+            user = get_object_or_404(User, slug=kwargs["slug"])
         else:
             user = request.user
 

@@ -14,6 +14,7 @@ class UserAdmin(BaseUserAdmin):
         "gender",
         "email",
         "uuid",
+        "slug",
         "date_joined",
         "date_modified",
         "picture_updated",

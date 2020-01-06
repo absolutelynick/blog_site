@@ -21,15 +21,16 @@
 
 
   <p class="lead">{{ post.title }} by
-    <a href="{% url 'users:profile' username=post.posted_by %}">@{{ post.posted_by }}</a>
+    <a href="{% url 'users:profile' slug=post.posted_by.slug %}">@{{ post.posted_by }}</a>
   </p>
   <hr class="my-5">{{ post.content }}
+
   <p class="lead">
         <p>
           {{ post.date_created }}
-          {% if post.liked_by|length %}
-        <br>Liked by: {{ post.liked_by|length }} people
-      {% endif %}
+            {% if post.liked_by.count %}
+                <br>Liked by: {{ post.liked_by.count }} people
+            {% endif %}
   </p>
 
                 </div>

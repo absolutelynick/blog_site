@@ -12,26 +12,55 @@
 
         <div class="jumbotron jumbotron-fluid bg-white" style="padding-top: 30px">
 
-            <img src="{% static "images/icons/blog.png"%}"
-               width="70" height="70" class="mx-auto d-block" alt="Blog">
+            <div class="container text-center">
 
-            <h1 class="display-5 text-center">Post</h1>
-
-            <div class="container">
+                <h3>{{ post.title }}</h3> by
+                    <a href="{% url 'users:profile' slug=post.posted_by.slug %}">@{{ post.posted_by }}</a><p>
 
 
-  <p class="lead">{{ post.title }} by
-    <a href="{% url 'users:profile' slug=post.posted_by.slug %}">@{{ post.posted_by }}</a>
-  </p>
-  <hr class="my-5">{{ post.content }}
+            <ul class="list-group">
+                    <li class="list-group-item-white d-flex justify-content-between align-items-center text-justify"
+                    style="margin-bottom: 20px;">
+                        {{ post.content }}
+                    </li>
+                    <li class="list-group-item-white d-flex justify-content-between align-items-center"
+                    style="margin-bottom: 20px;">
+                        {{ post.date_created }}
+                    <button href="#" class="badge badge-primary badge-pill float-right">
+                        Likes {{ post.liked_by.count }}
+                    </button>
+                    </li>
+                     {% if comments %}
+                        {% for comment in comments %}
+{#                                {{ comment.comment }}#}
+{#                                <a href="{% url 'users:profile' slug=comment#}
+{#                                .comment_by.slug#}
+{#                                    %}">#}
+{#                                     @{{ comment.comment_by }}</a>#}
 
-  <p class="lead">
-        <p>
-          {{ post.date_created }}
-            {% if post.liked_by.count %}
-                <br>Liked by: {{ post.liked_by.count }} people
-            {% endif %}
-  </p>
+                            <div class="btn-group btn-group-toggle border border-light rounded" data-toggle="buttons">
+                              <label class="btn btn-white active" style="width:30%;">
+                                <input type="radio" name="options" id="option1" autocomplete="off" checked><a href="{% url 'users:profile' slug=comment
+                                .comment_by.slug
+                                    %}">
+                                     @{{ comment.comment_by }}</a>
+                              </label>
+                              <label class="btn btn-white text-left" style="width:70%;">
+                                <input type="radio" name="options" id="option2" autocomplete="off"> {{ comment.comment }}
+                              </label>
+                                {% if comment.comment_by == user %}
+                                    <form action="{% url 'blog:comment_delete' %}" method="POST" class="mb-2 mr-sm-2">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="slug" value="{{ comment.slug }}"/>
+                                        <button type="submit" class="btn btn-danger btn-sm float-right">Delete</button>
+                                    </form>
+                                {% endif %}
+
+                            </div>
+
+                        {% endfor %}
+                         </ul>
+                    {% endif %}
 
                 </div>
             </div>

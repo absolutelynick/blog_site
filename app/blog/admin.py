@@ -27,7 +27,7 @@ class BlogAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ["post", "comment", "date_created", "date_modified"]
+    list_display = ["post", "comment", "comment_by", "date_created", "date_modified"]
     list_filter = ("comment", "date_created", "date_modified")
     search_fields = [
         "post",

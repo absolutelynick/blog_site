@@ -3,9 +3,10 @@ from django.shortcuts import redirect
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from django.urls import reverse
 
-from .models import BlogPost
-from .forms import PostForm  # , CommentForm
+from .models import BlogPost, Comment
+from .forms import PostForm, CommentForm
 from api.utils.page_tools import get_pagination_page
 
 
@@ -63,7 +64,8 @@ class BlogPostView(LoginRequiredMixin, TemplateView):
 
     def get(self, request, *args, **kwargs):
         post = get_object_or_404(BlogPost, slug=kwargs["slug"])
-        context = {"title": f"{post.slug}", "post": post}
+        comments = Comment.objects.filter(post=post).order_by("date_created")
+        context = {"title": f"{post.slug}", "post": post, "comments": comments}
         return render(request, self.template_name, context=context)
 
 
@@ -83,7 +85,7 @@ class BlogPostDeleteView(LoginRequiredMixin, TemplateView):
 
     template_name = "blog/delete.html"
 
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         obj = get_object_or_404(BlogPost, slug=kwargs["slug"])
         context = {"object": obj}
         if obj:
@@ -93,3 +95,26 @@ class BlogPostDeleteView(LoginRequiredMixin, TemplateView):
             pass
 
         return render(request, self.template_name, context=context)
+
+
+class CommentDeleteView(LoginRequiredMixin, TemplateView):
+    """Delete a users comment """
+
+    template_name = "blog/detail.html"
+
+    def post(self, request):
+        slug = request.POST["slug"]
+        comment = get_object_or_404(Comment, slug=slug)
+        post = Comment.post
+
+        try:
+            comment.delete()
+            messages.success(request, "You have successfully deleted the comment")
+
+        except:
+            messages.warning(request, "The comment could not be deleted.")
+
+        comments = Comment.objects.filter(post=post).order_by("date_created")
+        context = {"title": f"{post.slug}", "post": post, "comments": comments}
+
+        return redirect("blog:post", slug)

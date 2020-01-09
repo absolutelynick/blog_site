@@ -17,5 +17,5 @@ urlpatterns = [
     path("post/<str:slug>/", BlogPostView.as_view(), name="post"),
     path("edit/<str:slug>/", BlogPostEditView.as_view(), name="edit"),
     path("delete/<str:slug>/", BlogPostDeleteView.as_view(), name="delete"),
-    path("comment_delete/", CommentDeleteView.as_view(), name="comment_delete"),
+    path("comment_delete/<str:uuid>/", CommentDeleteView.as_view(), name="comment_delete"),
 ]

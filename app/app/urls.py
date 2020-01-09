@@ -18,12 +18,13 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-# Two step auth
 
-from django_otp.admin import OTPAdminSite
+if not settings.DEBUG:
+    # Two step auth
 
+    from django_otp.admin import OTPAdminSite
 
-admin.site.__class__ = OTPAdminSite
+    admin.site.__class__ = OTPAdminSite
 
 urlpatterns = [
     # Admin

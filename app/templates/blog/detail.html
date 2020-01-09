@@ -1,72 +1,149 @@
 {% extends "base.html" %}
 {% load static %}
+{% load bootstrap4 %}
 
 {% block head_title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="row" style="margin-top:30px;">
-
-  <div class="col-6 mx-auto">
-
-    <div class="container" style="border: 1px solid lightgrey">
-
-        <div class="jumbotron jumbotron-fluid bg-white" style="padding-top: 30px">
-
-            <div class="container text-center">
-
-                <h3>{{ post.title }}</h3> by
-                    <a href="{% url 'users:profile' slug=post.posted_by.slug %}">@{{ post.posted_by }}</a><p>
 
 
-            <ul class="list-group">
-                    <li class="list-group-item-white d-flex justify-content-between align-items-center text-justify"
-                    style="margin-bottom: 20px;">
-                        {{ post.content }}
-                    </li>
-                    <li class="list-group-item-white d-flex justify-content-between align-items-center"
-                    style="margin-bottom: 20px;">
-                        {{ post.date_created }}
-                    <button href="#" class="badge badge-primary badge-pill float-right">
-                        Likes {{ post.liked_by.count }}
-                    </button>
-                    </li>
+  <!-- Page Content -->
+  <div class="container">
+
+    <div class="row">
+
+      <!-- Post Content Column -->
+      <div class="col-6 mx-auto">
+
+        <!-- Title -->
+        <h1 class="mt-4">{{ post.title }}</h1>
+
+        <!-- Author -->
+        <p class="lead">
+          by
+          <a href="{% url 'users:profile' slug=post.posted_by.slug %}">@{{ post.posted_by }}</a><p>
+        </p>
+
+        <hr>
+
+        <!-- Date/Time -->
+        <p>Posted on {{ post.date_created }}</p>
+
+          {% if post.image %}
+            <hr>
+
+            <!-- Preview Image -->
+            <img class="img-fluid rounded" src="{{post.image}}" alt="Post Image">
+
+          {% endif %}
+
+        <hr>
+
+        <!-- Post Content -->
+        <p class="lead">
+                {{ post.content }}
+        <hr>
+
+                         <!-- Comments Form -->
+
+
+                        <div class="card my-4">
+                          <h5 class="card-header">Leave a Comment</h5>
+                          <div class="card-body">
+                            <form action="{% url 'blog:post' %}" method="POST">{% csrf_token %}
+                              <div class="form-group">
+                                {% bootstrap_form form show_label=False layout='inline' error_types='all' %}
+                              </div>
+                              <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                          </div>
+                        </div>
+
+
                      {% if comments %}
                         {% for comment in comments %}
-{#                                {{ comment.comment }}#}
-{#                                <a href="{% url 'users:profile' slug=comment#}
-{#                                .comment_by.slug#}
-{#                                    %}">#}
-{#                                     @{{ comment.comment_by }}</a>#}
 
-                            <div class="btn-group btn-group-toggle border border-light rounded" data-toggle="buttons">
-                              <label class="btn btn-white active" style="width:30%;">
-                                <input type="radio" name="options" id="option1" autocomplete="off" checked><a href="{% url 'users:profile' slug=comment
-                                .comment_by.slug
-                                    %}">
-                                     @{{ comment.comment_by }}</a>
-                              </label>
-                              <label class="btn btn-white text-left" style="width:70%;">
-                                <input type="radio" name="options" id="option2" autocomplete="off"> {{ comment.comment }}
-                              </label>
-                                {% if comment.comment_by == user %}
-                                    <form action="{% url 'blog:comment_delete' %}" method="POST" class="mb-2 mr-sm-2">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="slug" value="{{ comment.slug }}"/>
+                                  <!-- Single Comment -->
+
+                            <div class="media mb-4">
+                                {% if comment.comment_by.picture %}
+                                        <img src="{{ comment.comment_by.picture.url }}"
+                                             width="50" height="50"
+                                             alt="Profile Picture"
+                                             class="d-flex mr-3 rounded-circle">
+                                    {% else %}
+                                        <img src="/media/user_images/placeholder.png" width="50" height="50"
+                                             alt="Placer Holder Image"
+                                             class="d-flex mr-3 rounded-circle">
+
+                                {% endif %}
+
+                              <div class="media-body">
+                                <h5 class="mt-0"><a href="{% url 'users:profile' slug=comment.comment_by.slug %}">
+                                                         @{{ comment.comment_by }}</a></h5>
+                                {{ comment.comment }}
+                              </div>
+                                {% if comment.comment_by == user or user.is_superuser %}
+                                    <form action="{% url 'blog:comment_delete' comment.uuid %}" method="POST"
+                                          class="mb-2 mr-sm-2">{% csrf_token %}
                                         <button type="submit" class="btn btn-danger btn-sm float-right">Delete</button>
                                     </form>
                                 {% endif %}
-
                             </div>
 
                         {% endfor %}
-                         </ul>
                     {% endif %}
 
-                </div>
-            </div>
+
+
         </div>
+        <!-- /.col -->
+
     </div>
-</div>
+    <!-- /.row -->
+
+  </div>
+<!-- /.container -->
+
+
+
+
+
+
+
+{#                    </li>#}
+{#                     {% if comments %}#}
+{#                        {% for comment in comments %}#}
+{##}
+{#                            <div class="btn-group btn-group-toggle border border-light rounded" data-toggle="buttons">#}
+{#                              <label class="btn btn-white active" style="width:30%;">#}
+{#                                <input type="radio" name="options" id="option1" autocomplete="off" checked><a href="{% url 'users:profile' slug=comment#}
+{#                                .comment_by.slug#}
+{#                                    %}">#}
+{#                                     @{{ comment.comment_by }}</a>#}
+{#                              </label>#}
+{#                              <label class="btn btn-white text-left" style="width:70%;">#}
+{#                                <input type="radio" name="options" id="option2" autocomplete="off"> {{ comment.comment }}#}
+{#                              </label>#}
+{#                                {% if comment.comment_by == user %}#}
+{#                                    <form action="{% url 'blog:comment_delete' %}" method="POST" class="mb-2 mr-sm-2">#}
+{#                                        {% csrf_token %}#}
+{#                                        <input type="hidden" name="slug" value="{{ comment.slug }}"/>#}
+{#                                        <button type="submit" class="btn btn-danger btn-sm float-right">Delete</button>#}
+{#                                    </form>#}
+{#                                {% endif %}#}
+{##}
+{#                            </div>#}
+{##}
+{#                        {% endfor %}#}
+{#                         </ul>#}
+{#                    {% endif %}#}
+{##}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{#</div>#}
 
 
 {% endblock %}

@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from django.shortcuts import redirect
+from django.http import HttpResponseRedirect
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
@@ -63,11 +63,31 @@ class BlogPostView(LoginRequiredMixin, TemplateView):
     template_name = "blog/detail.html"
 
     def get(self, request, *args, **kwargs):
+        form = CommentForm()
         post = get_object_or_404(BlogPost, slug=kwargs["slug"])
         comments = Comment.objects.filter(post=post).order_by("date_created")
-        context = {"title": f"{post.slug}", "post": post, "comments": comments}
+        context = {"post": post, "comments": comments, "form": form}
         return render(request, self.template_name, context=context)
 
+    def post(self, request, *args, **kwargs):
+        post = get_object_or_404(BlogPost, slug=kwargs["slug"])
+
+        if request.method == "POST":
+            form = CommentForm(request.POST)
+
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.post = post
+                comment.comment = form.cleaned_data["comment"]
+                comment.save()
+
+                messages.success(request, "Comment saved.")
+            else:
+                messages.error(request, "Error commenting.")
+
+        comments = Comment.objects.filter(post=post).order_by("date_created")
+        context = {"post": post, "comments": comments, "form": form}
+        return render(request, self.template_name, context=context)
 
 class BlogPostEditView(LoginRequiredMixin, TemplateView):
     """Post Edit View"""
@@ -98,23 +118,14 @@ class BlogPostDeleteView(LoginRequiredMixin, TemplateView):
 
 
 class CommentDeleteView(LoginRequiredMixin, TemplateView):
-    """Delete a users comment """
+    """Delete a users comment on a post"""
 
     template_name = "blog/detail.html"
 
-    def post(self, request):
-        slug = request.POST["slug"]
-        comment = get_object_or_404(Comment, slug=slug)
-        post = Comment.post
+    def post(self, request, *args, **kwargs):
+        comment = get_object_or_404(Comment, uuid=kwargs["uuid"])
+        post = comment.post
 
-        try:
-            comment.delete()
-            messages.success(request, "You have successfully deleted the comment")
+        comment.delete()
 
-        except:
-            messages.warning(request, "The comment could not be deleted.")
-
-        comments = Comment.objects.filter(post=post).order_by("date_created")
-        context = {"title": f"{post.slug}", "post": post, "comments": comments}
-
-        return redirect("blog:post", slug)
+        return HttpResponseRedirect(reverse('blog:post', kwargs={'slug': post.slug}))

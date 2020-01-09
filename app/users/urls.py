@@ -6,9 +6,9 @@ from .views import (
     CreateUserView,
     ProfileView,
     ProfileEditView,
-    PasswordResetView,
     PasswordChangeView,
-    PasswordSendResetEmailView,
+    PasswordSendResetEmailSetView,
+    PasswordResetEmailSendView,
     PasswordResetConfirmView,
     PasswordResetCompleteView,
     save_edit,
@@ -35,10 +35,12 @@ urlpatterns = [
     path("thank_you/", ThanksPage.as_view(), name="thank_you"),
     path(
         "reset_email_sent/",
-        PasswordSendResetEmailView.as_view(),
+        PasswordSendResetEmailSetView.as_view(),
         name="reset_email_sent",
     ),
-    path("reset_password/", PasswordResetView.as_view(), name="reset_password"),
+    path(
+        "reset_password/", PasswordResetEmailSendView.as_view(), name="reset_password"
+    ),
     path("change_password/", PasswordChangeView.as_view(), name="change_password"),
     path(
         "reset/<uidb64>/<token>/",

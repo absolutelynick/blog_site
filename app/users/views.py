@@ -125,7 +125,7 @@ class CreateUserView(CreateView):
         return context
 
 
-class PasswordResetView(auth_views.PasswordResetView):
+class PasswordResetEmailSendView(auth_views.PasswordResetView):
     """Reset user password email"""
 
     template_name = "users/password_reset_form.html"
@@ -133,12 +133,12 @@ class PasswordResetView(auth_views.PasswordResetView):
     email_template_name = "users/password_reset_email.html"
 
     def get_context_data(self, **kwargs):
-        context = super(PasswordResetView, self).get_context_data(**kwargs)
+        context = super(PasswordResetEmailSendView, self).get_context_data(**kwargs)
         context["title"] = "Reset Password"
         return context
 
 
-class PasswordSendResetEmailView(TemplateView):
+class PasswordSendResetEmailSetView(TemplateView):
     """Resetting your password thank you"""
 
     template_name = "users/thank_you_for_resetting.html"
@@ -152,13 +152,15 @@ class PasswordChangeView(auth_views.PasswordChangeView):
     """Change user password"""
 
     template_name = "users/password_change_form.html"
-    # success_url = reverse_lazy("users:profile", kwargs={'username': '{user.username}'})
-    success_url = reverse_lazy("users:profile")
 
     def get_context_data(self, **kwargs):
         context = super(PasswordChangeView, self).get_context_data(**kwargs)
         context["title"] = "Change Password"
         return context
+
+    def get_success_url(self):
+        user = self.get_form_kwargs()["user"]
+        return reverse_lazy("users:profile", kwargs={"slug": user.slug})
 
 
 class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):

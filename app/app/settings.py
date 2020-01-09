@@ -10,6 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
+from django.core.management.utils import get_random_secret_key
+
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -19,9 +24,7 @@ BASE_DIR = os.path.abspath(os.path.join(__file__, "../.."))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get(
-    "SECRET_KEY", "eh0(m#9@4imgvsc@1w&mr@#a58+_dn^!%0h4w%f0$h0i(k$511"
-)
+SECRET_KEY = os.environ.get("SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DJANGO_DEBUG", "true") == "true"
@@ -34,14 +37,11 @@ ALLOWED_HOSTS = (
 
 # Sentry Errors
 
-if DEBUG == False:
-    import sentry_sdk
-    from sentry_sdk.integrations.django import DjangoIntegration
-
-    sentry_sdk.init(
-        dsn="https://63c3efb271074a27b1a708a8d17b9a44@sentry.io/1854798",
-        integrations=[DjangoIntegration()],
-    )
+sentry_sdk.init(
+    dsn=os.environ.get("SENTRY_ERROR_KEY", None),
+    integrations=[DjangoIntegration()],
+    environment="staging" if DEBUG else "production",
+)
 
 
 # Application definition
@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.postgres",
+    "django_otp",
+    "django_otp.plugins.otp_totp",
     "rest_framework.authtoken",
     "social_django",
     "rest_framework",
@@ -72,7 +74,10 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_otp.middleware.OTPMiddleware",
 ]
+
+OTP_TOTP_ISSUER = "Google"
 
 ROOT_URLCONF = "app.urls"
 
@@ -150,7 +155,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 if DEBUG:
-    from .environment_variables import set_environment_variables
+    from api.environment_variables import set_environment_variables
 
     set_environment_variables()
 

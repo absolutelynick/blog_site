@@ -8,7 +8,11 @@ django-bootstrap4==1.0.1
 flake8>=3.6.0,<3.7.0
 sentry-sdk==0.13.5
 raven==6.10.0
+
+# Authorization
 social-auth-app-django==2.1.0
+django-otp==0.7.5
+qrcode==6.1
 
 # Testing
 codecov==2.0.15

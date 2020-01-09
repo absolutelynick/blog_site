@@ -18,8 +18,17 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+# Two step auth
+
+from django_otp.admin import OTPAdminSite
+
+
+admin.site.__class__ = OTPAdminSite
+
 urlpatterns = [
-    path("site/admin/", admin.site.urls),
+    # Admin
+    path("supersite/admin2step/", admin.site.urls, name="admin"),
+    # Site
     path("", include("core.urls")),
     path("users/", include("users.urls"), name="users"),
     path("blog/", include("blog.urls"), name="blog"),

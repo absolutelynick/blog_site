@@ -62,10 +62,13 @@ class BlogPostView(LoginRequiredMixin, TemplateView):
 
     template_name = "blog/detail.html"
 
+    def get_post_comments(self, post):
+        return Comment.objects.filter(post=post).order_by("-date_created")
+
     def get(self, request, *args, **kwargs):
         form = CommentForm(request.POST or None)
         post = get_object_or_404(BlogPost, slug=kwargs["slug"])
-        comments = Comment.objects.filter(post=post).order_by("date_created")
+        comments = self.get_post_comments(post)
         context = {"post": post, "comments": comments, "form": form}
         return render(request, self.template_name, context=context)
 
@@ -88,7 +91,7 @@ class BlogPostView(LoginRequiredMixin, TemplateView):
             else:
                 messages.error(request, "Error commenting.")
 
-        comments = Comment.objects.filter(post=post).order_by("date_created")
+        comments = self.get_post_comments(post)
         context = {"post": post, "comments": comments, "form": form}
         return render(request, self.template_name, context=context)
 

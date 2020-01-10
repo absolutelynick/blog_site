@@ -5,28 +5,64 @@
     {% for posts in posts|chunks_of:3 %}
         <div class="row">
             {% for post in posts %}
-                <a class="col-sm btn btn-light form-control"
-                   href="{% url 'blog:post' post.slug %}"
-                   style="border: solid 1px lightgrey; margin: 5px 5px 5px 5px; height: 100%;">
-                    <h6 class="mt-0">{{ post.title }}</h6>
-                    {{ post.content|truncatechars:20  }}
-                    <br><strong><small>Posted by @{{ post.posted_by }}</small></strong>
-                </a>
+
+                <div class="container col-sm">
+                <div class="card mb-4">
+{#                  <img class="card-img-top" src="http://placehold.it/750x300" alt="Card image cap">#}
+                  <div class="card-body">
+                    <h5 class="card-title">{{ post.title }}</h5>
+                    <p class="card-text font-weight-light">{{ post.content|truncatechars:30  }}</p>
+                    <a href="{% url 'blog:post' post.slug %}" class="btn btn-primary">Read More</a>
+                  </div>
+                  <div class="card-footer text-muted">
+                    Posted {{ post.date_created|date:"M d, Y h:m" }} by
+                      <a href="{% url 'users:profile' slug=post.posted_by.slug %}">
+                                                         @{{ post.posted_by }}</a>
+                  </div>
+                </div>
+                </div>
+
+
+
             {% endfor %}
         </div>
     {% endfor %}
 
 </div>
 
+
+{% if page.paginator.num_pages > 1 %}
+
 <div class="container-fluid text-center"
         width="100%" style="margin: 15px 0 15px 0;">
-    {% if page.has_previous %}
-        <a href="?page={{ page.previous_page_number }}">Last page </a>
-    {% endif %}
-        <span class="current">
-            Page {{ page.number }} of {{ page.paginator.num_pages }}
-        </span>
-      {% if page.has_next %}
-            <a href="?page={{ page.next_page_number }}"> Next page</a>
-      {% endif %}
+
+        <!-- Pagination -->
+        <ul class="pagination justify-content-center mb-4">
+              {% if page.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page.previous_page_number }}">&larr; Older</a>
+                    </li>
+              {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">&larr; Older</a>
+                    </li>
+              {% endif %}
+
+            <li class="page-item disabled">
+                <div class="page-link">Page {{ page.number }} of {{ page.paginator.num_pages }}</div>
+            </li>
+
+              {% if page.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page.next_page_number }}">Newer &rarr;</a>
+                    </li>
+              {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">Newer &rarr;</a>
+                    </li>
+              {% endif %}
+        </ul>
+
 </div>
+
+{% endif %}

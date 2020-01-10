@@ -50,9 +50,11 @@
                         <div class="card my-4">
                           <h5 class="card-header">Leave a Comment</h5>
                           <div class="card-body">
-                            <form action="{% url 'blog:post' %}" method="POST">{% csrf_token %}
+                            <form action="{% url 'blog:post' post.slug %}" method="POST">{% csrf_token %}
                               <div class="form-group">
-                                {% bootstrap_form form show_label=False layout='inline' error_types='all' %}
+
+                                  {% bootstrap_field form.comment layout='inline' error_types='all' %}
+
                               </div>
                               <button type="submit" class="btn btn-primary">Submit</button>
                             </form>
@@ -104,46 +106,6 @@
 
   </div>
 <!-- /.container -->
-
-
-
-
-
-
-
-{#                    </li>#}
-{#                     {% if comments %}#}
-{#                        {% for comment in comments %}#}
-{##}
-{#                            <div class="btn-group btn-group-toggle border border-light rounded" data-toggle="buttons">#}
-{#                              <label class="btn btn-white active" style="width:30%;">#}
-{#                                <input type="radio" name="options" id="option1" autocomplete="off" checked><a href="{% url 'users:profile' slug=comment#}
-{#                                .comment_by.slug#}
-{#                                    %}">#}
-{#                                     @{{ comment.comment_by }}</a>#}
-{#                              </label>#}
-{#                              <label class="btn btn-white text-left" style="width:70%;">#}
-{#                                <input type="radio" name="options" id="option2" autocomplete="off"> {{ comment.comment }}#}
-{#                              </label>#}
-{#                                {% if comment.comment_by == user %}#}
-{#                                    <form action="{% url 'blog:comment_delete' %}" method="POST" class="mb-2 mr-sm-2">#}
-{#                                        {% csrf_token %}#}
-{#                                        <input type="hidden" name="slug" value="{{ comment.slug }}"/>#}
-{#                                        <button type="submit" class="btn btn-danger btn-sm float-right">Delete</button>#}
-{#                                    </form>#}
-{#                                {% endif %}#}
-{##}
-{#                            </div>#}
-{##}
-{#                        {% endfor %}#}
-{#                         </ul>#}
-{#                    {% endif %}#}
-{##}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-{#</div>#}
 
 
 {% endblock %}

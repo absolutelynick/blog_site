@@ -41,6 +41,15 @@ class PostForm(forms.ModelForm):
 
 
 class CommentForm(forms.ModelForm):
+    comment = forms.CharField(
+        max_length=256,
+        widget=forms.Textarea(
+            attrs={
+                "rows": 2,
+                "required": True,
+            }
+        ),
+    )
     class Meta:
         model = Comment
-        fields = ("comment", "comment_by")
+        fields = ("comment",)

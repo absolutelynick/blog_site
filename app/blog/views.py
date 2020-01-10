@@ -63,7 +63,7 @@ class BlogPostView(LoginRequiredMixin, TemplateView):
     template_name = "blog/detail.html"
 
     def get(self, request, *args, **kwargs):
-        form = CommentForm()
+        form = CommentForm(request.POST or None)
         post = get_object_or_404(BlogPost, slug=kwargs["slug"])
         comments = Comment.objects.filter(post=post).order_by("date_created")
         context = {"post": post, "comments": comments, "form": form}
@@ -73,13 +73,16 @@ class BlogPostView(LoginRequiredMixin, TemplateView):
         post = get_object_or_404(BlogPost, slug=kwargs["slug"])
 
         if request.method == "POST":
-            form = CommentForm(request.POST)
+            form = CommentForm(request.POST or None)
 
             if form.is_valid():
                 comment = form.save(commit=False)
                 comment.post = post
                 comment.comment = form.cleaned_data["comment"]
+                comment.comment_by = request.user
                 comment.save()
+
+                form = CommentForm(None)
 
                 messages.success(request, "Comment saved.")
             else:

@@ -103,8 +103,8 @@
             {% for message in messages %}
                 {% if message.tags == "success" %}
                     <div class="container alert alert-success text-center" role="alert">
-                        {{ message|safe }} <a href="{% url 'users:profile' slug=user.slug%}" class="alert-link">Click
-                    to go to your profile</a>.
+                        {{ message|safe }}
+{#                    <a href="{% url 'users:profile' slug=user.slug%}" class="alert-link">Click to go to your profile</a>.#}
                 {% else %}
                     <div class="container alert alert-danger text-center" role="alert">
                         {{ message|safe }}

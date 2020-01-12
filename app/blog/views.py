@@ -4,6 +4,9 @@ from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.urls import reverse
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
 
 from .models import BlogPost, Comment
 from .forms import PostForm, CommentForm
@@ -135,3 +138,23 @@ class CommentDeleteView(LoginRequiredMixin, TemplateView):
         comment.delete()
 
         return HttpResponseRedirect(reverse('blog:post', kwargs={'slug': post.slug}))
+
+
+@login_required
+@require_POST
+def post_like_button(request):
+    object_id = request.POST.get('id')
+    action = request.POST.get('action')
+    print(f"object_id: {object_id}")
+    if object_id and action:
+        try:
+            post = BlogPost.objects.get(id=object_id)
+            if action == 'like':
+                post.liked_by.add(request.user)
+            else:
+                post.liked_by.remove(request.user)
+            return JsonResponse({'status':'ok'})
+        except:
+            pass
+
+    return JsonResponse({'status':'ko'})

@@ -3,6 +3,10 @@ from django import forms
 from .models import Comment, BlogPost
 
 
+class SearchForm(forms.Form):
+    search = forms.CharField()
+
+
 class PostForm(forms.ModelForm):
     title = forms.CharField(
         max_length=BlogPost._meta.get_field("title").max_length,
@@ -42,14 +46,9 @@ class PostForm(forms.ModelForm):
 
 class CommentForm(forms.ModelForm):
     comment = forms.CharField(
-        max_length=256,
-        widget=forms.Textarea(
-            attrs={
-                "rows": 2,
-                "required": True,
-            }
-        ),
+        max_length=256, widget=forms.Textarea(attrs={"rows": 2, "required": True})
     )
+
     class Meta:
         model = Comment
         fields = ("comment",)

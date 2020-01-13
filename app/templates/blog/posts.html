@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load static %}
+{% load bootstrap4 %}
 
 {% block head_title %}Blog List{% endblock %}
 
@@ -6,11 +8,50 @@
 
 <h1 class="display-5 text-center">{{ title }}</h1>
 
-<div class="nav justify-content-center">
-    <a class="nav-item btn btn-info"
-        href="{% url 'blog:new' %}"
-        style="width: 250px;">Create new post here
-    </a>
+<div class="container">
+  <div class="row justify-content-md-center">
+
+        <div class="col-md-auto">
+
+            <a class="nav-item btn btn-info"
+                href="{% url 'blog:new' %}"
+                style="width: 250px;">Create new post here
+            </a>
+
+        </div>
+
+        <div class="col-md-auto">
+
+            <form class="form-inline" action="{% url 'blog:post_search' %}" method="GET">
+                {% bootstrap_field form.search layout='inline' error_types='all' %}
+                <button class="btn btn-info my-2 my-sm-0" type="submit" style="margin-left: 15px">Search</button>
+            </form>
+
+        </div>
+
+    </div>
+</div>
+
+    <hr>
+
+        {% if search  %}
+
+            <h3 class="text-center">
+
+
+                {% if not total_results %}Sorry! {% endif %}
+
+                We found {{ total_results }} result{{ total_results|pluralize }} for '{{ search }}'
+
+
+            </h3>
+
+            <hr>
+
+        {% endif %}
+
+
+
 </div>
 
     <p>

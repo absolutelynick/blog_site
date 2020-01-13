@@ -7,9 +7,10 @@ from django.urls import reverse
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 
 from .models import BlogPost, Comment
-from .forms import PostForm, CommentForm
+from .forms import PostForm, CommentForm, SearchForm
 from api.utils.page_tools import get_pagination_page
 
 
@@ -19,9 +20,41 @@ class BlogListView(LoginRequiredMixin, TemplateView):
     template_name = "blog/posts.html"
 
     def get(self, request, *args, **kwargs):
-        object_list = BlogPost.objects.all()
+        form = SearchForm()
+        query = None
+        object_list = []
+
+        if "search" in request.GET:
+            form = SearchForm(request.GET)
+            if form.is_valid():
+                query = form.cleaned_data["search"]
+
+                search_vector = SearchVector("title", weight="A") + SearchVector(
+                    "content", weight="B"
+                )
+                search_query = SearchQuery(query)
+                object_list = (
+                    BlogPost.objects.annotate(
+                        search=search_vector,
+                        rank=SearchRank(search_vector, search_query),
+                    )
+                    .filter(search=search_query)
+                    .order_by("-rank")
+                )
+
+        else:
+            object_list = BlogPost.objects.all()
+
         page, posts = get_pagination_page(request, object_list)
-        context = {"title": "Posts", "posts": posts, "page": page}
+
+        context = {
+            "title": "Posts",
+            "posts": posts,
+            "page": page,
+            "form": form,
+            "search": query,
+            "total_results": len(posts),
+        }
         return render(request, self.template_name, context=context)
 
 
@@ -98,6 +131,7 @@ class BlogPostView(LoginRequiredMixin, TemplateView):
         context = {"post": post, "comments": comments, "form": form}
         return render(request, self.template_name, context=context)
 
+
 class BlogPostEditView(LoginRequiredMixin, TemplateView):
     """Post Edit View"""
 
@@ -137,24 +171,24 @@ class CommentDeleteView(LoginRequiredMixin, TemplateView):
 
         comment.delete()
 
-        return HttpResponseRedirect(reverse('blog:post', kwargs={'slug': post.slug}))
+        return HttpResponseRedirect(reverse("blog:post", kwargs={"slug": post.slug}))
 
 
 @login_required
 @require_POST
 def post_like_button(request):
-    object_id = request.POST.get('id')
-    action = request.POST.get('action')
+    object_id = request.POST.get("id")
+    action = request.POST.get("action")
     print(f"object_id: {object_id}")
     if object_id and action:
         try:
             post = BlogPost.objects.get(id=object_id)
-            if action == 'like':
+            if action == "like":
                 post.liked_by.add(request.user)
             else:
                 post.liked_by.remove(request.user)
-            return JsonResponse({'status':'ok'})
+            return JsonResponse({"status": "ok"})
         except:
             pass
 
-    return JsonResponse({'status':'ko'})
+    return JsonResponse({"status": "ko"})

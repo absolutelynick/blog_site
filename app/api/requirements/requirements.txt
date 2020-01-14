@@ -21,4 +21,4 @@ mock==3.0.5
 faker==3.0.0
 
 # Style formatting
-black==19.3b0
+black==19.10b0

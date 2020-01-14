@@ -10,12 +10,17 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
-from django.core.management.utils import get_random_secret_key
-
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
 import os
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = os.environ.get("DJANGO_DEBUG", "true") == "true"
+
+if DEBUG:
+    from api.environment_variables import set_environment_variables
+    set_environment_variables()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.abspath(os.path.join(__file__, "../.."))
@@ -24,15 +29,12 @@ BASE_DIR = os.path.abspath(os.path.join(__file__, "../.."))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY", get_random_secret_key())
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DJANGO_DEBUG", "true") == "true"
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 ALLOWED_HOSTS = (
     ["0.0.0.0", "127.0.0.1", "localhost", "dev.blogsite.com"]
     if DEBUG
-    else ["pythonanywhere.com"]
+    else ["*"]
 )
 
 # Sentry Errors
@@ -153,11 +155,6 @@ AUTHENTICATION_BACKENDS = [
     # Default django login
     "django.contrib.auth.backends.ModelBackend",
 ]
-
-if DEBUG:
-    from api.environment_variables import set_environment_variables
-
-    set_environment_variables()
 
 # https://apps.twitter.com/app/new
 SOCIAL_AUTH_TWITTER_KEY = os.environ.get("SOCIAL_AUTH_TWITTER_KEY", None)

@@ -7,11 +7,12 @@ from django.urls import reverse
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
-from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
+from django.db.models import Q
 
 from .models import BlogPost, Comment
 from .forms import PostForm, CommentForm, SearchForm
 from api.utils.page_tools import get_pagination_page
+
 
 
 class BlogListView(LoginRequiredMixin, TemplateView):
@@ -27,19 +28,15 @@ class BlogListView(LoginRequiredMixin, TemplateView):
         if "search" in request.GET:
             form = SearchForm(request.GET)
             if form.is_valid():
-                query = form.cleaned_data["search"]
+                query = form.cleaned_data["search"].strip().lower()
 
-                search_vector = SearchVector("title", weight="A") + SearchVector(
-                    "content", weight="B"
-                )
-                search_query = SearchQuery(query)
                 object_list = (
-                    BlogPost.objects.annotate(
-                        search=search_vector,
-                        rank=SearchRank(search_vector, search_query),
+                    BlogPost.objects.filter(
+                    Q(content__icontains=query)
+                    | Q(title__icontains=query)
                     )
-                    .filter(search=search_query)
-                    .order_by("-rank")
+                ).distinct(
+                    "title"
                 )
 
         else:

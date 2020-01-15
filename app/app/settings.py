@@ -10,14 +10,15 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
+import os
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
 from django.core.management.utils import get_random_secret_key
 
-import os
 
-# SECURITY WARNING: don't run with debug turned on in production!
+SECRET_KEY = os.environ.get("SECRET_KEY", get_random_secret_key())
+
 DEBUG = os.environ.get("DJANGO_DEBUG", "true") == "true"
 
 if DEBUG:
@@ -25,14 +26,7 @@ if DEBUG:
 
     set_environment_variables()
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.abspath(os.path.join(__file__, "../.."))
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY", None) or get_random_secret_key()
 
 ALLOWED_HOSTS = (
     ["0.0.0.0", "127.0.0.1", "localhost", "dev.blogsite.com"] if DEBUG else ["*"]

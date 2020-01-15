@@ -6,74 +6,101 @@
 
 {% block content %}
 
-{% if user_profile.username == user.username %}
-    <p class="text-center">Welcome to your profile. You can
-        <a href="{% url "users:profile_edit" %}">edit your profile</a> <b>or</b>
-    <a href="{% url "users:change_password" %}">change your password</a>.</p>
-{% endif %}
 
-  <div class="row" style="margin-top: 30px;">
+<div class="row">
 
-      <div class="col-6 mx-auto">
+    <div class="col-sm float-left">
 
-        <div class="container" style="border: 1px solid lightgrey">
 
-            <div class="jumbotron jumbotron-fluid bg-white" style="padding-top: 30px">
+            <!-- PROFILE PICTURE SECTION -->
 
-                {% if user_profile.picture %}
-                        <img src="{{ user_profile.picture.url }}"
-                             width="130" height="130" class="mx-auto d-block" alt="Profile Picture"
-                             style="border-radius: 100%; border: solid 1px black;">
-                    {% else %}
-                        <img src="/media/user_images/placeholder.png" width="130" height="130"
-                             class="mx-auto d-block"
-                             alt="Placer Holder Image"
-                             style="border-radius: 100%; border: solid 1px black;">
 
+        {% if user_profile.picture %}
+                <img src="{{ user_profile.picture.url }}"
+                     width="130" height="130" class="mx-auto d-block" alt="Profile Picture"
+                     style="border-radius: 100%; border: solid 1px black;">
+            {% else %}
+                <img src="/media/user_images/placeholder.png" width="130" height="130"
+                     class="mx-auto d-block"
+                     alt="Placer Holder Image"
+                     style="border-radius: 100%; border: solid 1px black;">
+
+        {% endif %}
+
+        <h3 class="display-5 text-center">Profile</h3>
+        <h5 class="text-center">@{{user_profile.username}}</h5>
+
+        {% if user_profile.website and user_profile.website != None %}
+            <h6 class="text-center"><strong>
+                <a href="{{ user_profile.website }}">
+                {% if user_profile.username == user.username %}
+                    Your Webite
+                {% else %}
+                    Website
                 {% endif %}
+                </a>
+            </strong></h6>
+        {% endif %}
 
-                <h1 class="display-5 text-center">Profile</h1>
-                <h3 class="text-center">@{{user_profile.username}}</h3>
 
-                <div class="text-center" >You can edit your profile using the following form<div><br>
+        <!-- PROFILE EDIT SECTION -->
 
-                <div class="container">
 
-                    {% for field, value in user_profile.fields.items %}
 
-                        {% if field == "Website" and value != None %}
-                            <b><br><a href="{{ value }}">
-                                {% if user_profile.username == user.username %}
-                                    Your Webite
-                                {% else %}
-                                    Website
-                                {% endif %}
-                        </a></br>
-                        {% else %}
-                              <div class="row"><div class="col text-right">
-                                  <b>{{ field }}:</b>
-                              </div>
-                                  <div class="col text-left">{{ value }}</div>
-                              </div>
-                        {% endif %}
-                    {% endfor %}
+    {% if user_profile.username == user.username %}
 
-                </div>
+        <div class="mx-auto" style="width: 100px; margin-bottom: 20px;">
 
+        <div class="btn-group" style="width: 100px;" role="group">
+            <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+              Edit
+            </button>
+
+            <div class="dropdown-menu text-center" aria-labelledby="btnGroupDrop1">
+              <a class="dropdown-item" href="{% url "users:profile_edit" %}">Edit Profile</a>
+              <a class="dropdown-item" href="{% url "users:change_password" %}">Change Password</a>
             </div>
+        </div>
+        </div>
+
+
+    {% endif %}
+
+            <!-- PROFILE INFO SECTION -->
+
+    </div>
+    <div class="col-sm float-right">
+
+        <div class="container text-center">
+
+            {% for field, value in user_profile.fields.items %}
+
+                {% if field != "Website" and value != None %}
+                      <div class="row"><div class="col text-right">
+                          <b>{{ field }}:</b>
+                      </div>
+                          <div class="col text-left">{{ value }}</div>
+                      </div>
+                {% endif %}
+            {% endfor %}
 
         </div>
 
-      </div>
-
-  </div>
-
-              <hr>
-
-
-          {% include "pagination.html" with page=posts %}
+    </div>
 
 </div>
+
+
+<hr>
+
+
+
+<!-- POSTS -->
+
+
+
+{% include "pagination.html" with page=posts %}
 
 
 

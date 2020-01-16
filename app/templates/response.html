@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+
+{% block head_title %}{{ title }}{% endblock %}
+
+{% block content %}
+
+    <div class="jumbotron text-center bg-white" style="margin: 50px;">
+      <h1 class="display-5">{{ header }}</h1>
+      <p class="lead">{{ body }}</p>
+      <hr class="my-4">
+      <p>{{ url_text }}</p>
+      <a class="btn btn-primary btn-lg" href="{{ url }}" role="button">{{url_button_text}}</a>
+    </div>
+
+{% endblock %}

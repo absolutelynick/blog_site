@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.postgres",
+    "django.contrib.sites",
     "django_otp",
     "django_otp.plugins.otp_totp",
     "rest_framework.authtoken",
@@ -62,6 +63,8 @@ INSTALLED_APPS = [
     "users",
     "api",
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

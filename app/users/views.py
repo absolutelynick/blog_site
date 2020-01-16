@@ -54,7 +54,6 @@ class ProfileEditView(LoginRequiredMixin, TemplateView):
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        # form = UserEditForm(request.POST)
 
         if request.method == "POST":
             form = UserEditForm(
@@ -112,12 +111,22 @@ def save_edit(request):
 class ThanksForSigningUpPage(TemplateView):
     """Thank you for signing up page"""
 
-    template_name = "users/thank_you_for_signing_up.html"
+    template_name = "response.html"
 
     def get(self, request, *args, **kwargs):
-        context = {"title": "Thank you"}
-        return render(request, self.template_name, context=context)
+        return render(request, self.template_name, context=self.get_context_data())
 
+    def get_context_data(self):
+        context = dict(
+            title = "Thank you",
+            header = "Thank you for signing up!",
+            body = "Your user details will be deleted after two days if "
+                   "you do not follow the link in your email.",
+            url_text = "Click below to head to the login page.",
+            url = reverse_lazy("users:sign_in"),
+            url_button_text = "Sign in",
+        )
+        return context
 
 class CreateUserView(CreateView):
     """Create a new user with custom template"""
@@ -147,19 +156,35 @@ class CreateUserView(CreateView):
 
 
 class EmailConfirmationView(TemplateView):
-    template_name = "users/confirm_user_email.html"
+    template_name = "response.html"
+
+    def get_context_data(self):
+        context = dict(
+            title = "Email Confirmation",
+            header = "Email Verified",
+            body = "Please feel free to sign in and use your account",
+            url_text = "Please click below",
+            url = reverse_lazy("users:sign_in"),
+            url_button_text = "Sign in",
+        )
+        return context
 
     def get(self, request, *args, **kwargs):
         token = request.GET.get("token", False)
 
         if token:
             success = self.confirm_user_email(token)
+            context = self.get_context_data()
 
-            return self.render_to_response(
-                dict(
-                    success=success,
-                )
-            )
+            if not success:
+                 context["title"] = "Email NOT Confirmed"
+                 context["header"] = "Email NOT Verified"
+                 context["body"] = "Email not found please go to the sign up page"
+                 context["url_text"] = "Please enter your details on the sign in page"
+                 context["url"] = reverse_lazy("users:sign_up")
+                 context["url_button_text"] = "Sign up"
+
+            return render(request, self.template_name, self.get_context_data())
 
         return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -178,33 +203,54 @@ class EmailConfirmationView(TemplateView):
 
 class ResendEmailConfirmationView(TemplateView):
     template_name = "users/email_to_reset_form.html"
-    success_url = "users/thank_you_for_resetting.html"
+    success_url = "response.html"
     form_class = EmailSendForm
-
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
         return render(request, self.template_name, context=context)
 
     def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
+        form = self.form_class(request.POST or None)
+        context = self.get_context_data()
+
         if form.is_valid():
+
             email = form.cleaned_data["email"]
 
             if User.objects.filter(email=email).exists():
-                send_confirm_email_link(form.cleaned_data["email"])
-                return HttpResponseRedirect(self.success_url)
-                # TODO USE BASIC TEMPLATE FOR SUCCESS
-            else:
-                # TODO MAKE BASIC TEMPLATE AND USE FOR FAIL
-                return HttpResponseRedirect(self.success_url)
 
-        return render(request, self.template_name, {'form': form})
+                send_confirm_email_link(email)
+
+                context["header"] = "Email Confirmation Success"
+                context["body"] = "Thank you for confirming you should now be able to sign in"
+                context["url_text"] = "Follow the link to sign in"
+                context["url"] = reverse_lazy("users:sign_in")
+                context["url_button_text"] = "Sign in"
+                del context["form"]
+
+                return render(request, self.success_url, context)
+            else:
+
+                context["header"]= "Please sign up"
+                context["body"]= "Email not found please go to the sign up page"
+                context["url_text"]= "Please enter your details on the sign in page"
+                context["url"]= reverse_lazy("users:sign_up")
+                context["url_button_text"]= "Sign up"
+
+                return render(request, self.success_url, context)
+
+        return render(request, self.template_name, context)
 
     def get_context_data(self):
         context = dict(
             title = "Email Confirmation",
-            form = self.form_class
+            header = "Email Confirmation",
+            body = "Please enter your email below",
+            url_text = "Please then follow the link in your email to confirm your email so we can send you a link",
+            url = "users:resend_verification",
+            url_button_text = "Resend Verification",
+            form = "self.form_class"
         )
         return context
 
@@ -224,13 +270,22 @@ class PasswordResetEmailSendView(auth_views.PasswordResetView):
 
 class PasswordSendResetEmailSetView(TemplateView):
     """Resetting your password thank you"""
-
-    template_name = "users/thank_you_for_resetting.html"
+    template_name = "response.html"
 
     def get(self, request, *args, **kwargs):
-        context = {"title": "Thank you"}
-        return render(request, self.template_name, context=context)
+        return render(request, self.template_name, context=self.get_context_data())
 
+    def get_context_data(self):
+        context = dict(
+            title = "Thank you",
+            header = "Thank you for resetting!",
+            body = "If you don't receive an email, please make sure you've "
+                   "entered the email you registered with.",
+            url_text = "Click below to head to the login page.",
+            url = reverse_lazy("users:sign_in"),
+            url_button_text = "Sign in",
+        )
+        return context
 
 class PasswordChangeView(auth_views.PasswordChangeView):
     """Change user password"""

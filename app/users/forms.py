@@ -4,16 +4,17 @@ from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 
+from .models import User
 import datetime
 
 YEAR = datetime.datetime.now().year + 1
 
 
-class EmailSendForm(forms.ModelForm):
+class EmailSendForm(forms.Form):
     email = forms.EmailField()
 
     class Meta:
-        fields = "email"
+        fields = ("email",)
 
 
 class UserCreateForm(UserCreationForm):

@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
+from django.http import HttpResponseRedirect
+from django.core import signing
 
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
@@ -8,10 +10,16 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from .forms import UserCreateForm, UserEditForm
+from rest_framework.response import Response
+from rest_framework import status
+
+from .forms import UserCreateForm, UserEditForm, EmailSendForm
 from .models import User
 from blog.models import BlogPost
 from api.utils.page_tools import get_pagination_page
+from api.message.tasks import send_confirm_email_link
+
+import datetime
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):
@@ -101,7 +109,7 @@ def save_edit(request):
     )
 
 
-class ThanksPage(TemplateView):
+class ThanksForSigningUpPage(TemplateView):
     """Thank you for signing up page"""
 
     template_name = "users/thank_you_for_signing_up.html"
@@ -124,11 +132,87 @@ class CreateUserView(CreateView):
         context["title"] = "Sign Up"
         return context
 
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            user = form.save()
+            user.is_active = False
+            user.save()
+
+            send_confirm_email_link(form.cleaned_data["email"])
+
+            return HttpResponseRedirect(self.success_url)
+
+        return render(request, self.template_name, {'form': form})
+
+
+class EmailConfirmationView(TemplateView):
+    template_name = "users/confirm_user_email.html"
+
+    def get(self, request, *args, **kwargs):
+        token = request.GET.get("token", False)
+
+        if token:
+            success = self.confirm_user_email(token)
+
+            return self.render_to_response(
+                dict(
+                    success=success,
+                )
+            )
+
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def confirm_user_email(self, token):
+        try:
+            data = signing.loads(token, max_age=datetime.timedelta(days=3))
+        except signing.BadSignature:
+            return False
+
+        user = get_object_or_404(User, uuid=data["user_uuid"])
+        user.is_active = True
+        user.save()
+
+        return True
+
+
+class ResendEmailConfirmationView(TemplateView):
+    template_name = "users/email_to_reset_form.html"
+    success_url = "users/thank_you_for_resetting.html"
+    form_class = EmailSendForm
+
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        return render(request, self.template_name, context=context)
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data["email"]
+
+            if User.objects.filter(email=email).exists():
+                send_confirm_email_link(form.cleaned_data["email"])
+                return HttpResponseRedirect(self.success_url)
+                # TODO USE BASIC TEMPLATE FOR SUCCESS
+            else:
+                # TODO MAKE BASIC TEMPLATE AND USE FOR FAIL
+                return HttpResponseRedirect(self.success_url)
+
+        return render(request, self.template_name, {'form': form})
+
+    def get_context_data(self):
+        context = dict(
+            title = "Email Confirmation",
+            form = self.form_class
+        )
+        return context
+
 
 class PasswordResetEmailSendView(auth_views.PasswordResetView):
     """Reset user password email"""
 
-    template_name = "users/password_reset_form.html"
+    template_name = "users/email_to_reset_form.html"
     success_url = reverse_lazy("users:reset_email_sent")
     email_template_name = "users/password_reset_email.html"
 
@@ -169,8 +253,16 @@ class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
     template_name = "users/password_reset_confirm.html"
     success_url = reverse_lazy("users:password_reset_complete")
 
-
 class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
     """Completed change password process that the password was changed"""
 
     template_name = "users/password_reset_complete.html"
+
+    def get(self, request, *args, **kwargs):
+
+        print(f"success user request: {request}")
+        print(f"success user request: {request.user}")
+        print(f"success user args: {args}")
+        print(f"success user kwargs: {kwargs}")
+
+        return render(request, self.template_name, context=self.get_context_data())

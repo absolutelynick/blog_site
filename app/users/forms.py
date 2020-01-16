@@ -9,6 +9,13 @@ import datetime
 YEAR = datetime.datetime.now().year + 1
 
 
+class EmailSendForm(forms.ModelForm):
+    email = forms.EmailField()
+
+    class Meta:
+        fields = "email"
+
+
 class UserCreateForm(UserCreationForm):
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)

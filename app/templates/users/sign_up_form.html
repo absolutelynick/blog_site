@@ -85,8 +85,13 @@
 
                 </form>
 
-                    <p style="margin-bottom:-40px;" class="font-weight-light text-center">Have an account?
-                        <a class="" href="{% url 'users:sign_in' %}">Sign in</a></p>
+
+                    <a href="{% url 'users:sign_in' %}"
+                         class="btn btn-light form-control">Have an account?
+                        <strong>
+                            Sign in
+                        </strong>
+                    </a>
 
                 </div>
 

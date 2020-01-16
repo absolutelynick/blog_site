@@ -17,8 +17,8 @@
                 <img src="{% static "images/icons/blog.png"%}"
                    width="70" height="70" class="mx-auto d-block" alt="Blog Logo">
 
-                <h1 class="display-5 text-center">Reset Password</h1>
-                <h6 class="display-6 text-center"><small>A password link will be sent to your email.</small></h6>
+                <h1 class="display-5 text-center">{{title}}</h1>
+                <h6 class="display-6 text-center"><small>A link will be sent to your email.</small></h6>
 
                 <form method="post" action="">{% csrf_token %}
 
@@ -29,7 +29,7 @@
 
                     <div class="align-self-center" style="margin-bottom: -40px;">
                         <button type="submit" class="btn btn-primary form-control"
-                         value="Send e-mail">Send Reset Email</button>
+                         value="Send e-mail">Send {{title}} Email</button>
                     </div>
 
                 </form>

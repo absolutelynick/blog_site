@@ -118,15 +118,16 @@ class ThanksForSigningUpPage(TemplateView):
 
     def get_context_data(self):
         context = dict(
-            title = "Thank you",
-            header = "Thank you for signing up!",
-            body = "Your user details will be deleted after two days if "
-                   "you do not follow the link in your email.",
-            url_text = "Click below to head to the login page.",
-            url = reverse_lazy("users:sign_in"),
-            url_button_text = "Sign in",
+            title="Thank you",
+            header="Thank you for signing up! Check your email!",
+            body="Your user details will be deleted after two days if "
+            "you do not follow the link in your email.",
+            url_text="Click below to head to the login page.",
+            url=reverse_lazy("users:sign_in"),
+            url_button_text="Sign in",
         )
         return context
+
 
 class CreateUserView(CreateView):
     """Create a new user with custom template"""
@@ -152,7 +153,7 @@ class CreateUserView(CreateView):
 
             return HttpResponseRedirect(self.success_url)
 
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {"form": form})
 
 
 class EmailConfirmationView(TemplateView):
@@ -160,12 +161,12 @@ class EmailConfirmationView(TemplateView):
 
     def get_context_data(self):
         context = dict(
-            title = "Email Confirmation",
-            header = "Email Verified",
-            body = "Please feel free to sign in and use your account",
-            url_text = "Please click below",
-            url = reverse_lazy("users:sign_in"),
-            url_button_text = "Sign in",
+            title="Email Confirmation",
+            header="Email Verified",
+            body="Please feel free to sign in and use your account",
+            url_text="Please click below",
+            url=reverse_lazy("users:sign_in"),
+            url_button_text="Sign in",
         )
         return context
 
@@ -177,12 +178,12 @@ class EmailConfirmationView(TemplateView):
             context = self.get_context_data()
 
             if not success:
-                 context["title"] = "Email NOT Confirmed"
-                 context["header"] = "Email NOT Verified"
-                 context["body"] = "Your email not found. Please try again."
-                 context["url_text"] = "Please enter your details on the sign in page"
-                 context["url"] = reverse_lazy("users:resend_verification")
-                 context["url_button_text"] = "Resend confirmation"
+                context["title"] = "Email NOT Confirmed"
+                context["header"] = "Email NOT Verified"
+                context["body"] = "Your email not found. Please try again."
+                context["url_text"] = "Please enter your details on the sign in page"
+                context["url"] = reverse_lazy("users:resend_verification")
+                context["url_button_text"] = "Resend confirmation"
 
             return render(request, self.template_name, self.get_context_data())
 
@@ -223,8 +224,9 @@ class ResendEmailConfirmationView(TemplateView):
                 send_confirm_email_link(email)
 
                 context["header"] = "Email Confirmation Sent"
-                context["body"] = "You should receive an email with a link to " \
-                                  "confirm you address."
+                context["body"] = (
+                    "You should receive an email with a link to " "confirm you address."
+                )
                 context["url_text"] = "Follow the link to sign in that you receive"
                 context["url"] = reverse_lazy("users:sign_in")
                 context["url_button_text"] = "Sign in"
@@ -232,11 +234,13 @@ class ResendEmailConfirmationView(TemplateView):
 
             else:
 
-                context["header"]= "Please sign up"
-                context["body"]= f"Email '{email}' not found please go to the sign up page"
-                context["url_text"]= "Please enter your details on the sign in page"
-                context["url"]= reverse_lazy("users:sign_up")
-                context["url_button_text"]= "Sign up"
+                context["header"] = "Please sign up"
+                context[
+                    "body"
+                ] = f"Email '{email}' not found please go to the sign up page"
+                context["url_text"] = "Please enter your details on the sign in page"
+                context["url"] = reverse_lazy("users:sign_up")
+                context["url_button_text"] = "Sign up"
 
             return render(request, self.success_url, context)
 
@@ -244,13 +248,13 @@ class ResendEmailConfirmationView(TemplateView):
 
     def get_context_data(self):
         context = dict(
-            title = "Email Confirmation",
-            header = "Email Confirmation",
-            body = "Please enter your email below",
-            url_text = "Please then follow the link in your email to confirm your email so we can send you a link",
-            url = "users:resend_verification",
-            url_button_text = "Resend Verification",
-            form = "self.form_class"
+            title="Email Confirmation",
+            header="Email Confirmation",
+            body="Please enter your email below",
+            url_text="Please then follow the link in your email to confirm your email so we can send you a link",
+            url="users:resend_verification",
+            url_button_text="Resend Verification",
+            form="self.form_class",
         )
         return context
 
@@ -270,6 +274,7 @@ class PasswordResetEmailSendView(auth_views.PasswordResetView):
 
 class PasswordSendResetEmailSetView(TemplateView):
     """Resetting your password thank you"""
+
     template_name = "response.html"
 
     def get(self, request, *args, **kwargs):
@@ -277,15 +282,16 @@ class PasswordSendResetEmailSetView(TemplateView):
 
     def get_context_data(self):
         context = dict(
-            title = "Thank you",
-            header = "Thank you for resetting!",
-            body = "If you don't receive an email, please make sure you've "
-                   "entered the email you registered with.",
-            url_text = "Click below to head to the login page.",
-            url = reverse_lazy("users:sign_in"),
-            url_button_text = "Sign in",
+            title="Thank you",
+            header="Thank you for resetting!",
+            body="If you don't receive an email, please make sure you've "
+            "entered the email you registered with.",
+            url_text="Click below to head to the login page.",
+            url=reverse_lazy("users:sign_in"),
+            url_button_text="Sign in",
         )
         return context
+
 
 class PasswordChangeView(auth_views.PasswordChangeView):
     """Change user password"""
@@ -308,16 +314,8 @@ class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
     template_name = "users/password_reset_confirm.html"
     success_url = reverse_lazy("users:password_reset_complete")
 
+
 class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
     """Completed change password process that the password was changed"""
 
     template_name = "users/password_reset_complete.html"
-
-    def get(self, request, *args, **kwargs):
-
-        print(f"success user request: {request}")
-        print(f"success user request: {request.user}")
-        print(f"success user args: {args}")
-        print(f"success user kwargs: {kwargs}")
-
-        return render(request, self.template_name, context=self.get_context_data())

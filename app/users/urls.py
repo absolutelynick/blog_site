@@ -40,7 +40,6 @@ urlpatterns = [
         ResendEmailConfirmationView.as_view(),
         name="resend_verification",
     ),
-
     path("sign_up/", CreateUserView.as_view(), name="sign_up"),
     path("profile/<str:slug>/", ProfileView.as_view(), name="profile"),
     path("profile_edit/", ProfileEditView.as_view(), name="profile_edit"),

@@ -14,7 +14,6 @@ from .forms import PostForm, CommentForm, SearchForm
 from api.utils.page_tools import get_pagination_page
 
 
-
 class BlogListView(LoginRequiredMixin, TemplateView):
     """Blog Post List Page"""
 
@@ -32,12 +31,9 @@ class BlogListView(LoginRequiredMixin, TemplateView):
 
                 object_list = (
                     BlogPost.objects.filter(
-                    Q(content__icontains=query)
-                    | Q(title__icontains=query)
+                        Q(content__icontains=query) | Q(title__icontains=query)
                     )
-                ).distinct(
-                    "title"
-                )
+                ).distinct("title")
 
         else:
             object_list = BlogPost.objects.all()

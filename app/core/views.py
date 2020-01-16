@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.conf import settings
+from django.urls import reverse_lazy
 
 from .forms import Contact_Form
 
@@ -19,12 +20,18 @@ def contact_page(request):
         if settings.DEBUG:
             print(form.cleaned_data)
 
-        context = {
-            "title": "Contact Us",
-            "first_name": form.cleaned_data["first_name"],
-            "last_name": form.cleaned_data["last_name"],
-        }
-        return render(request, "core/thank_you_for_signing_up.html", context)
+        name = f"{form.cleaned_data['first_name']} {form.cleaned_data['last_name']}"
+
+        context = dict(
+            title="Thank you",
+            header=f"Thank you for contacting us {name}!",
+            body="We will get back you as soon as we can. ",
+            url_text="Click below to head to the login page.",
+            url=reverse_lazy("users:sign_in"),
+            url_button_text="Sign in",
+        )
+
+        return render(request, "response.html", context)
 
     if request.user.is_authenticated:
         form.fields["first_name"].initial = request.user.first_name

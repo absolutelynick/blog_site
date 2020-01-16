@@ -179,10 +179,10 @@ class EmailConfirmationView(TemplateView):
             if not success:
                  context["title"] = "Email NOT Confirmed"
                  context["header"] = "Email NOT Verified"
-                 context["body"] = "Email not found please go to the sign up page"
+                 context["body"] = "Your email not found. Please try again."
                  context["url_text"] = "Please enter your details on the sign in page"
-                 context["url"] = reverse_lazy("users:sign_up")
-                 context["url_button_text"] = "Sign up"
+                 context["url"] = reverse_lazy("users:resend_verification")
+                 context["url_button_text"] = "Resend confirmation"
 
             return render(request, self.template_name, self.get_context_data())
 
@@ -222,23 +222,23 @@ class ResendEmailConfirmationView(TemplateView):
 
                 send_confirm_email_link(email)
 
-                context["header"] = "Email Confirmation Success"
-                context["body"] = "Thank you for confirming you should now be able to sign in"
-                context["url_text"] = "Follow the link to sign in"
+                context["header"] = "Email Confirmation Sent"
+                context["body"] = "You should receive an email with a link to " \
+                                  "confirm you address."
+                context["url_text"] = "Follow the link to sign in that you receive"
                 context["url"] = reverse_lazy("users:sign_in")
                 context["url_button_text"] = "Sign in"
                 del context["form"]
 
-                return render(request, self.success_url, context)
             else:
 
                 context["header"]= "Please sign up"
-                context["body"]= "Email not found please go to the sign up page"
+                context["body"]= f"Email '{email}' not found please go to the sign up page"
                 context["url_text"]= "Please enter your details on the sign in page"
                 context["url"]= reverse_lazy("users:sign_up")
                 context["url_button_text"]= "Sign up"
 
-                return render(request, self.success_url, context)
+            return render(request, self.success_url, context)
 
         return render(request, self.template_name, context)
 

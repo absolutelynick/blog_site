@@ -1,5 +1,5 @@
 # Base
-django==2.2.8
+django==2.2.24
 djangorestframework>=3.9.0,<3.10.0
 psycopg2>=2.7.5,<2.8.0
 psycopg2-binary==2.8.4

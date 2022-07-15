@@ -15,7 +15,7 @@ django-otp==0.7.5
 qrcode==6.1
 
 # Testing
-codecov==2.0.15
+codecov==2.0.16
 coverage==5.0.1
 mock==3.0.5
 faker==3.0.0
